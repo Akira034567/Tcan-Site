@@ -1,0 +1,226 @@
+---
+import { url } from '../../lib/url.ts';
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/layout/PageHero.astro';
+import SolutionBlock from '../../components/solutions/SolutionBlock.astro';
+import MethodStrip from '../../components/MethodStrip.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { pillars, type Pillar } from '../../data/pillars.ts';
+import { pageMeta } from '../../data/pages.ts';
+import { company } from '../../data/company.ts';
+import { services, faqPage } from '../../lib/seo.ts';
+import { pillarTone } from '../../lib/tones.ts';
+
+export const getStaticPaths = (() => pillars.map((pillar) => ({ params: { pilar: pillar.slug }, props: { pillar } }))) satisfies GetStaticPaths;
+
+const { pillar } = Astro.props as { pillar: Pillar };
+const path = `/solucoes/${pillar.slug}/`;
+const meta = pageMeta(path);
+const others = pillars.filter((p) => p.id !== pillar.id);
+const schema = [...services(Astro.site, pillar), faqPage(Astro.site, path, pillar.faq)];
+---
+
+<BaseLayout path={path} schema={schema}>
+  <PageHero eyebrow="Soluções" title={pillar.name} lead={pillar.summary} crumbs={meta.breadcrumb}>
+    <nav class="jump" aria-label={`Soluções de ${pillar.name}`}>
+      <ul role="list">
+        {
+          pillar.solutions.map((s) => (
+            <li>
+              <a href={`#${s.anchor}`}>
+                <Icon name={s.icon} size={18} /> {s.name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </PageHero>
+
+  <section class="section section--tight challenges" aria-labelledby="desafios-title">
+    <div class="container layout">
+      <div>
+        <p class="eyebrow">Desafios que resolvemos</p>
+        <h2 id="desafios-title">{pillar.tagline}</h2>
+      </div>
+      <ul role="list" class="list">
+        {
+          pillar.challenges.map((c) => (
+            <li>
+              <Icon name="target" size={20} />
+              <span>{c}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {pillar.solutions.map((solution, index) => <SolutionBlock pillar={pillar} solution={solution} index={index} />)}
+
+  <MethodStrip />
+
+  <Faq items={pillar.faq} id="faq-pilar" title={`Dúvidas sobre ${pillar.name}`} tone="white" />
+
+  <section class="section section--tight others" aria-labelledby="outras-title">
+    <div class="container">
+      <p class="eyebrow">Continue explorando</p>
+      <h2 id="outras-title" class="others-title">Outras frentes do ecossistema.</h2>
+      <ul role="list" class="others-grid">
+        {
+          others.map((p) => (
+            <li class="card other" style={`--tone-bg:${pillarTone[p.id].bg};--tone-fg:${pillarTone[p.id].fg}`}>
+              <span class="icon-badge tone">
+                <Icon name={p.icon} />
+              </span>
+              <h3>
+                <a href={url(`/solucoes/${p.slug}/`)}>{p.name}</a>
+              </h3>
+              <p>{p.tagline}</p>
+              <span class="more" aria-hidden="true">
+                Ver a frente <Icon name="arrow-right" size={16} />
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    title={`Vamos falar sobre ${pillar.name}?`}
+    text="Conte o seu desafio. Um sócio da TCAN responde pessoalmente e indica o melhor caminho."
+    topic={pillar.name}
+    founder={company.routing[pillar.id]}
+  />
+</BaseLayout>
+
+<style>
+  .jump ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+  .jump a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
+    background: rgb(255 255 255 / 0.06);
+    box-shadow: var(--ring-dark);
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  .jump a:hover {
+    background: rgb(112 191 60 / 0.14);
+    color: var(--lime-300);
+  }
+  .challenges {
+    background: var(--mist);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+    gap: var(--space-7);
+    align-items: center;
+  }
+  .layout h2 {
+    margin-top: var(--space-3);
+    font-size: var(--step-3);
+  }
+  .list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+  .list li {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    line-height: 1.45;
+    font-weight: 500;
+  }
+  .list :global(svg) {
+    flex: none;
+    color: var(--forest-800);
+    margin-top: 0.1rem;
+  }
+  .others {
+    background: var(--paper);
+  }
+  .others-title {
+    font-size: var(--step-3);
+    margin: var(--space-3) 0 var(--space-6);
+  }
+  .tone {
+    background: var(--tone-bg);
+    color: var(--tone-fg);
+  }
+  .others-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+  .other {
+    position: relative;
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    transition:
+      box-shadow var(--dur-3) var(--ease-out),
+      transform var(--dur-3) var(--ease-out);
+  }
+  .other:hover {
+    box-shadow: var(--shadow-3);
+    transform: translateY(-3px);
+  }
+  .other h3 {
+    font-size: var(--step-1);
+    margin-top: var(--space-2);
+  }
+  .other h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .other h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .other p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+    color: var(--forest-800);
+  }
+  @media (max-width: 60rem) {
+    .layout {
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+    }
+    .others-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 36rem) {
+    .list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,147 @@
+---
+import { url } from '../../lib/url.ts';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/layout/PageHero.astro';
+import Ecosystem from '../../components/home/Ecosystem.astro';
+import MethodStrip from '../../components/MethodStrip.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { pageMeta } from '../../data/pages.ts';
+import { pillars } from '../../data/pillars.ts';
+import { generalFaq } from '../../data/content.ts';
+import { faqPage } from '../../lib/seo.ts';
+import type { IconName } from '../../lib/icons.ts';
+
+const path = '/solucoes/';
+const meta = pageMeta(path);
+const solution = (id: string) => {
+  for (const p of pillars) {
+    const s = p.solutions.find((x) => x.id === id);
+    if (s) return { ...s, href: url(`/solucoes/${p.slug}/#${s.anchor}`) };
+  }
+  throw new Error(`Unknown solution ${id}`);
+};
+const combos: { title: string; text: string; icon: IconName; items: string[] }[] = [
+  {
+    title: 'Expansão de rede com padrão',
+    text: 'Para quem abre novas unidades e precisa que cada loja entregue a mesma experiência.',
+    icon: 'store',
+    items: ['trade-pdv', 'operacional', 'educacao'],
+  },
+  {
+    title: 'Agenda ESG com indicadores',
+    text: 'Para transformar compromissos de sustentabilidade e cuidado com pessoas em ações mensuráveis.',
+    icon: 'leaf',
+    items: ['hidrica', 'saude', 'marca-comunicacao'],
+  },
+  {
+    title: 'Crescimento com eficiência',
+    text: 'Para decidir com dados, modernizar a operação e organizar capital e tributos.',
+    icon: 'trending-up',
+    items: ['gestao', 'ia-sva', 'financeiras'],
+  },
+];
+const faq = generalFaq.filter((f) => /hub|apenas|começa|custa/.test(f.q));
+---
+
+<BaseLayout path={path} schema={[faqPage(Astro.site, path, faq)]}>
+  <PageHero
+    eyebrow="Soluções"
+    title="Ecossistema de Soluções Empresariais"
+    lead="Quatro frentes integradas, com especialistas selecionados e coordenados pela TCAN. Contrate uma solução ou combine várias, sempre com um único ponto de contato."
+    crumbs={meta.breadcrumb}
+  />
+
+  <Ecosystem
+    eyebrow="As quatro frentes"
+    title="Escolha por onde começar."
+    intro="Cada frente tem sua própria página com entregas, formatos e resultados esperados. Se preferir, conte o desafio e indicamos o caminho."
+  />
+
+  <section class="section combos" aria-labelledby="combos-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Soluções combinadas</p>
+        <h2 id="combos-title">Quando os desafios se cruzam, as soluções também.</h2>
+        <p class="lead">
+          Exemplos ilustrativos de como as frentes se complementam. Cada projeto é desenhado a partir do diagnóstico da
+          sua empresa.
+        </p>
+      </div>
+      <ul role="list" class="grid">
+        {
+          combos.map((c) => (
+            <li class="card combo" data-reveal>
+              <span class="icon-badge">
+                <Icon name={c.icon} />
+              </span>
+              <h3>{c.title}</h3>
+              <p>{c.text}</p>
+              <ul role="list" class="links">
+                {c.items.map((id) => {
+                  const s = solution(id);
+                  return (
+                    <li>
+                      <a href={s.href}>
+                        <Icon name={s.icon} size={18} /> {s.name}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <MethodStrip />
+  <Faq items={faq} tone="white" />
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .combos {
+    background: var(--white);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+  .combo {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    background: var(--paper);
+    border-color: transparent;
+  }
+  h3 {
+    font-size: var(--step-2);
+    margin-top: var(--space-2);
+  }
+  .combo > p {
+    color: var(--text-muted);
+  }
+  .links {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 500;
+    color: var(--forest-800);
+  }
+  @media (max-width: 60rem) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

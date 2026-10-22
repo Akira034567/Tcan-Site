@@ -1,0 +1,109 @@
+---
+import { url } from '../../lib/url.ts';
+import CardStage from '../card3d/CardStage.astro';
+import Icon from '../ui/Icon.astro';
+import { company } from '../../data/company.ts';
+---
+
+<section class="hero on-dark" aria-labelledby="hero-title">
+  <div class="backdrop" aria-hidden="true">
+    <svg class="tick" viewBox="0 0 600 600" preserveAspectRatio="xMaxYMax slice">
+      <polygon points="250,600 340,600 600,0 510,0" fill="currentColor"></polygon>
+      <polygon points="340,600 430,600 600,430 600,340" fill="currentColor" opacity="0.6"></polygon>
+    </svg>
+  </div>
+  <div class="container grid">
+    <div class="copy">
+      <p class="eyebrow">{company.tagline}</p>
+      <h1 id="hero-title">Assessoria de negócios com <span class="hl">olhar de dono</span>.</h1>
+      <p class="lead">{company.pitch}</p>
+      <div class="ctas">
+        <a class="btn" href={url('/contato/')}>Fale com um sócio <Icon name="arrow-right" /></a>
+        <a class="btn btn--ghost" href={url('/solucoes/')}>Conheça as soluções</a>
+      </div>
+      <ul class="points tick-list" role="list">
+        <li>Sócios com 35 anos de mercado em grandes empresas</li>
+        <li>Estratégia e execução, com um único ponto de contato</li>
+        <li>Ecossistema de especialistas em 4 frentes de negócio</li>
+      </ul>
+    </div>
+    <div class="visual">
+      <CardStage />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+      radial-gradient(60rem 40rem at 78% 40%, rgb(23 89 42 / 0.45), transparent 65%),
+      radial-gradient(40rem 30rem at 10% 110%, rgb(15 61 34 / 0.6), transparent 70%),
+      var(--ink-900);
+    padding-block: clamp(2.5rem, 1rem + 5vw, 6rem) clamp(3.5rem, 2rem + 5vw, 7rem);
+  }
+  .backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .tick {
+    position: absolute;
+    right: -4%;
+    bottom: 0;
+    width: min(46rem, 70vw);
+    height: 100%;
+    color: var(--lime-400);
+    opacity: 0.06;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: center;
+  }
+  .copy {
+    display: grid;
+    gap: var(--space-5);
+    justify-items: start;
+  }
+  h1 {
+    font-size: var(--step-hero);
+    font-weight: 600;
+    letter-spacing: -0.028em;
+    line-height: 1.04;
+    max-width: 13ch;
+  }
+  .hl {
+    color: var(--lime-400);
+  }
+  .lead {
+    color: var(--ink-200);
+    max-width: 34rem;
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  .points {
+    margin-top: var(--space-4);
+    color: var(--ink-200);
+    font-size: 0.975rem;
+  }
+  .visual {
+    min-width: 0;
+  }
+  @media (max-width: 60rem) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    h1 {
+      max-width: 16ch;
+    }
+  }
+</style>

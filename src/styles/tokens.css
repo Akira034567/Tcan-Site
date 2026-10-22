@@ -1,0 +1,139 @@
+/*
+ * TCAN design tokens.
+ * Contrast notes (WCAG 2.2): lime #70BF3C is for dark surfaces only (6.2–8.3:1);
+ * on light surfaces it fails both text and non-text contrast, so there it is decoration only.
+ */
+@layer tokens {
+  :root {
+    /* Ink (neutrals, slightly green-tinted to sit with the brand) */
+    --ink-950: #0c0f0d;
+    --ink-900: #141714;
+    --ink-850: #1c201d;
+    --charcoal: #2b2b2b; /* the card */
+    --ink-700: #3a3f3b;
+    --ink-500: #5b625c; /* muted text on light (6.3:1 on white) */
+    --ink-400: #8a918a; /* borders only */
+    --ink-300: #a3aaa2; /* muted text on dark (7.6:1 on ink-900) */
+    --ink-200: #c9cec6;
+    --ink-100: #e4e8e1;
+    --mist: #eef1ea;
+    --paper: #f6f7f4;
+    --white: #ffffff;
+
+    /* Greens */
+    --forest-950: #0b2a17;
+    --forest-900: #0f3d22;
+    --forest-800: #17592a; /* green text, links and primary buttons on light (8.4:1) */
+    --forest-700: #1f6b33;
+    --green-600: #3f8f3a; /* icons/graphics on light (non-text 4:1) */
+    --green-500: #56b14a; /* card stripe 2 */
+    --lime-400: #70bf3c; /* card lime: details, on dark only */
+    --lime-300: #8ed160;
+    --lime-100: #e6f4da;
+
+    --danger: #b42318;
+    --danger-on-dark: #ff8a7a;
+
+    /* Semantic (light context by default) */
+    --bg: var(--paper);
+    --surface: var(--white);
+    --surface-2: var(--mist);
+    --text: var(--ink-900);
+    --text-muted: var(--ink-500);
+    --line: var(--ink-100);
+    --link: var(--forest-800);
+    --accent: var(--forest-800);
+    --icon: var(--green-600);
+    --focus: var(--forest-800);
+
+    /* Type */
+    --font-sans: var(--font-body), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-head: var(--font-display), var(--font-sans);
+    --step--1: clamp(0.833rem, 0.811rem + 0.099vw, 0.9rem);
+    --step-0: clamp(1rem, 0.958rem + 0.185vw, 1.125rem);
+    --step-1: clamp(1.2rem, 1.131rem + 0.306vw, 1.406rem);
+    --step-2: clamp(1.44rem, 1.334rem + 0.471vw, 1.758rem);
+    --step-3: clamp(1.728rem, 1.572rem + 0.695vw, 2.197rem);
+    --step-4: clamp(2.074rem, 1.849rem + 0.997vw, 2.747rem);
+    --step-5: clamp(2.3rem, 1.95rem + 1.6vw, 3.6rem);
+    --step-hero: clamp(2.25rem, 1.6rem + 3vw, 4.5rem);
+
+    /* Space (8pt) */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 3rem;
+    --space-8: 4rem;
+    --space-9: 6rem;
+    --space-10: 8rem;
+    --section-y: clamp(4rem, 2.6rem + 6vw, 8.5rem);
+    --gutter: clamp(1.25rem, 0.667rem + 2.593vw, 3rem);
+    --container: 75rem;
+    --container-wide: 85rem;
+    --measure: 65ch;
+
+    /* Shape */
+    --radius-xs: 4px;
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-pill: 999px;
+
+    /* Elevation */
+    --shadow-1: 0 1px 2px rgb(12 15 13 / 0.06);
+    --shadow-2: 0 6px 16px -4px rgb(12 15 13 / 0.12);
+    --shadow-3: 0 24px 48px -16px rgb(12 15 13 / 0.28);
+    --ring-dark: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+
+    /* Motion */
+    --dur-1: 120ms;
+    --dur-2: 200ms;
+    --dur-3: 320ms;
+    --dur-4: 600ms;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+    --header-h: 4.5rem;
+  }
+
+  /* Dark context: any section can opt in with .on-dark */
+  .on-dark {
+    --bg: var(--ink-900);
+    --surface: var(--ink-850);
+    --surface-2: var(--charcoal);
+    --text: #f2f4f0;
+    --text-muted: var(--ink-300);
+    --line: rgb(255 255 255 / 0.1);
+    --link: var(--lime-400);
+    --accent: var(--lime-400);
+    --icon: var(--lime-400);
+    --focus: var(--lime-400);
+    color-scheme: dark;
+  }
+
+  .on-forest {
+    --bg: var(--forest-950);
+    --surface: var(--forest-900);
+    --surface-2: #134a29;
+    --text: #f2f6ef;
+    --text-muted: #b7c7b4;
+    --line: rgb(255 255 255 / 0.12);
+    --link: var(--lime-400);
+    --accent: var(--lime-400);
+    --icon: var(--lime-400);
+    --focus: var(--lime-400);
+    color-scheme: dark;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --dur-1: 0.01ms;
+      --dur-2: 0.01ms;
+      --dur-3: 0.01ms;
+      --dur-4: 0.01ms;
+    }
+  }
+}

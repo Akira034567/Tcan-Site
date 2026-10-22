@@ -1,0 +1,206 @@
+---
+import { url } from '../lib/url.ts';
+import LegalLayout from '../layouts/LegalLayout.astro';
+import Pending from '../components/ui/Pending.astro';
+import { company } from '../data/company.ts';
+
+const toc = [
+  { id: 'controlador', label: 'Quem é o controlador' },
+  { id: 'canal', label: 'Canal de privacidade' },
+  { id: 'dados', label: 'Dados que tratamos' },
+  { id: 'finalidades', label: 'Finalidades e bases legais' },
+  { id: 'compartilhamento', label: 'Compartilhamento' },
+  { id: 'internacional', label: 'Transferência internacional' },
+  { id: 'retencao', label: 'Por quanto tempo' },
+  { id: 'direitos', label: 'Seus direitos' },
+  { id: 'seguranca', label: 'Segurança' },
+  { id: 'cookies', label: 'Cookies' },
+  { id: 'outros', label: 'Outras informações' },
+];
+---
+
+<LegalLayout
+  path="/politica-de-privacidade/"
+  title="Política de Privacidade"
+  lead="Como a TCAN trata dados pessoais neste site, em linguagem clara e de acordo com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018, LGPD)."
+  toc={toc}
+>
+  <h2 id="controlador">1. Quem é o controlador</h2>
+  <p>
+    O controlador dos dados pessoais tratados neste site é a <strong>{company.tradeName}</strong> (<Pending v={company.legalName} />),
+    inscrita no CNPJ sob o nº <Pending v={company.cnpj} />, com sede em <Pending v={company.address.street} />,
+    <Pending v={company.address.city} />/<Pending v={company.address.state} />, CEP <Pending v={company.address.postalCode} />
+    ("TCAN", "nós").
+  </p>
+
+  <h2 id="canal">2. Canal de privacidade</h2>
+  <p>
+    Para exercer seus direitos ou tirar dúvidas sobre esta política, escreva para
+    <strong><Pending v={company.privacyEmail} /></strong>.
+    {
+      company.encarregado ? (
+        <>
+          Nosso encarregado pelo tratamento de dados pessoais é <Pending v={company.encarregado} />.
+        </>
+      ) : (
+        <>
+          Este é o canal de comunicação com o titular previsto no art. 41 da LGPD e no art. 11 da Resolução CD/ANPD nº 2/2022.
+        </>
+      )
+    }
+  </p>
+
+  <h2 id="dados">3. Dados que tratamos</h2>
+  <h3>Dados que você nos envia</h3>
+  <ul>
+    <li>
+      <strong>Formulário de contato:</strong> nome, e-mail, empresa, cargo (opcional), telefone ou WhatsApp (opcional),
+      área de interesse e a mensagem que você escrever.
+    </li>
+    <li>
+      <strong>Contato direto:</strong> as informações que você compartilhar ao falar com os sócios por WhatsApp, e-mail,
+      telefone ou LinkedIn.
+    </li>
+  </ul>
+  <p>Pedimos que você não envie dados pessoais sensíveis (como dados de saúde) pelos canais do site.</p>
+  <h3>Dados coletados durante a navegação</h3>
+  <ul>
+    <li>
+      <strong>Registros de acesso:</strong> endereço IP, data e hora, página acessada e dados técnicos do navegador,
+      mantidos pelo provedor de hospedagem por razões de segurança e cumprimento da lei.
+    </li>
+    <li>
+      <strong>Cookie necessário:</strong> registra a sua escolha sobre cookies.
+    </li>
+    <li>
+      <strong>Estatísticas (somente com o seu consentimento):</strong> o Google Analytics 4 registra identificadores
+      online pseudonimizados, páginas visitadas, tipo de dispositivo e navegador, origem do acesso e localização
+      aproximada. O Google Analytics 4 não armazena o endereço IP completo.
+    </li>
+  </ul>
+
+  <h2 id="finalidades">4. Finalidades e bases legais</h2>
+  <section class="table-wrap" tabindex="0" aria-label="Tabela de finalidades e bases legais">
+    <table>
+      <thead>
+        <tr><th scope="col">Para quê</th><th scope="col">Dados</th><th scope="col">Base legal (LGPD)</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Responder ao seu contato, entender a demanda e preparar propostas</td>
+          <td>Dados do formulário e do contato direto</td>
+          <td>Procedimentos preliminares a contrato (art. 7º, V) e legítimo interesse (art. 7º, IX)</td>
+        </tr>
+        <tr>
+          <td>Envolver especialistas do nosso ecossistema quando necessário para atender à sua demanda</td>
+          <td>Dados estritamente necessários ao atendimento</td>
+          <td>Procedimentos preliminares a contrato (art. 7º, V) e legítimo interesse (art. 7º, IX)</td>
+        </tr>
+        <tr>
+          <td>Medir a audiência e melhorar o site</td>
+          <td>Dados de navegação via Google Analytics 4</td>
+          <td>Consentimento (art. 7º, I), que você pode revogar a qualquer momento</td>
+        </tr>
+        <tr>
+          <td>Lembrar a sua escolha sobre cookies e manter o site seguro</td>
+          <td>Cookie necessário e registros de acesso</td>
+          <td>Legítimo interesse (art. 7º, IX) e cumprimento de obrigação legal (art. 7º, II)</td>
+        </tr>
+        <tr>
+          <td>Defender direitos em processos judiciais, administrativos ou arbitrais</td>
+          <td>Dados necessários a essa finalidade</td>
+          <td>Exercício regular de direitos (art. 7º, VI)</td>
+        </tr>
+      </tbody>
+    </table>
+        </section>
+  <p>Não usamos seus dados para publicidade direcionada e não tomamos decisões automatizadas sobre você.</p>
+
+  <h2 id="compartilhamento">5. Compartilhamento</h2>
+  <p>A TCAN não vende dados pessoais. Podemos compartilhá-los apenas com:</p>
+  <ul>
+    <li>
+      <strong>Especialistas do nosso ecossistema</strong>, quando forem necessários para atender à sua solicitação, sempre
+      limitado ao mínimo necessário e com dever de confidencialidade;
+    </li>
+    <li>
+      <strong>Prestadores de serviço</strong> que operam dados em nosso nome, como hospedagem do site, e-mail corporativo e,
+      com o seu consentimento, o Google Analytics;
+    </li>
+    <li><strong>Autoridades públicas</strong>, quando houver obrigação legal ou ordem judicial.</li>
+  </ul>
+  <p>
+    Quando você escolhe falar conosco pelo WhatsApp ou pelo LinkedIn, o tratamento feito por essas plataformas segue as
+    políticas de privacidade delas.
+  </p>
+
+  <h2 id="internacional">6. Transferência internacional</h2>
+  <p>
+    Alguns fornecedores, como o Google (Google Analytics) e provedores de nuvem e de e-mail, podem tratar dados fora do
+    Brasil, inclusive nos Estados Unidos. Essas transferências seguem o art. 33 da LGPD e as regras da ANPD sobre
+    transferência internacional (Resolução CD/ANPD nº 19/2024), com garantias contratuais de proteção adequada.
+  </p>
+
+  <h2 id="retencao">7. Por quanto tempo guardamos</h2>
+  <ul>
+    <li><strong>Contatos comerciais:</strong> até 24 meses após a última interação, salvo se houver contrato ou obrigação legal.</li>
+    <li><strong>Estatísticas do Google Analytics 4:</strong> retenção de eventos de 2 meses; cookies com duração de até 13 meses.</li>
+    <li><strong>Registros de acesso:</strong> 6 meses, conforme o Marco Civil da Internet (Lei nº 12.965/2014).</li>
+    <li><strong>Escolha sobre cookies:</strong> 6 meses.</li>
+  </ul>
+  <p>Depois desses prazos, os dados são eliminados ou anonimizados.</p>
+
+  <h2 id="direitos">8. Seus direitos</h2>
+  <p>Nos termos do art. 18 da LGPD, você pode pedir a qualquer momento:</p>
+  <ul>
+    <li>confirmação de que tratamos seus dados e acesso a eles;</li>
+    <li>correção de dados incompletos, inexatos ou desatualizados;</li>
+    <li>anonimização, bloqueio ou eliminação de dados desnecessários, excessivos ou tratados em desconformidade com a lei;</li>
+    <li>portabilidade a outro fornecedor, conforme a regulamentação da ANPD;</li>
+    <li>eliminação dos dados tratados com base no seu consentimento;</li>
+    <li>informação sobre com quem compartilhamos seus dados;</li>
+    <li>informação sobre a possibilidade de não consentir e as consequências da negativa;</li>
+    <li>revogação do consentimento;</li>
+    <li>revisão de decisões tomadas apenas com base em tratamento automatizado (não fazemos esse tipo de decisão).</li>
+  </ul>
+  <p>
+    Faça o seu pedido pelo canal <Pending v={company.privacyEmail} />. Poderemos solicitar informações para confirmar a
+    sua identidade. Respondemos de forma simplificada imediatamente ou, de forma completa, em até 15 dias (art. 19). Você
+    também pode peticionar à Autoridade Nacional de Proteção de Dados (ANPD).
+  </p>
+
+  <h2 id="seguranca">9. Segurança</h2>
+  <p>
+    Adotamos medidas técnicas e administrativas para proteger os dados pessoais (art. 46 da LGPD), como conexão
+    criptografada (HTTPS), acesso restrito às pessoas que precisam dos dados e fornecedores com padrões reconhecidos de
+    segurança. Em caso de incidente de segurança que possa gerar risco ou dano relevante, comunicaremos a ANPD e os
+    titulares afetados, conforme a lei.
+  </p>
+
+  <h2 id="cookies">10. Cookies</h2>
+  <p>
+    Usamos um cookie necessário e, apenas com o seu consentimento, cookies estatísticos. Veja os detalhes na
+    <a href={url('/politica-de-cookies/')}>Política de Cookies</a> ou altere sua escolha em
+    <button type="button" class="inline-btn" data-consent-open>Preferências de cookies</button>.
+  </p>
+
+  <h2 id="outros">11. Outras informações</h2>
+  <p>
+    Este site não é direcionado a crianças e adolescentes. Podemos atualizar esta política para refletir mudanças legais
+    ou nos nossos serviços; a data e a versão no topo da página indicam a última atualização. Mudanças relevantes serão
+    destacadas no site.
+  </p>
+</LegalLayout>
+
+<style>
+  .inline-btn {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--forest-800);
+    font: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>

@@ -1,0 +1,263 @@
+---
+import { url } from '../../lib/url.ts';
+/**
+ * The TCAN business card.
+ * 1. Default (no JS / reduced motion / low-end): CSS 3D card driven by the radio controls (:has()).
+ * 2. Enhanced: a three.js scene loads after idle when the card is visible and crossfades in.
+ * All functions are reachable without dragging (WCAG 2.5.7) through the native radios.
+ */
+import { founders } from '../../data/founders.ts';
+import { founderWa } from '../../lib/links.ts';
+import BrandIcon from '../ui/BrandIcon.astro';
+import Icon from '../ui/Icon.astro';
+---
+
+<div class="card-stage" data-card-stage>
+  <div class="stage" data-stage>
+    <div class="css-card" aria-hidden="true">
+      <div class="css-card-inner">
+        <img class="face face-front" src={url('/cartao/frente.svg')} width="900" height="500" alt="" fetchpriority="high" decoding="async" />
+        {
+          founders.map((f) => (
+            <img class={`face face-back back-${f.id}`} src={url(`/cartao/verso-${f.id}.svg`)} width="900" height="500" alt="" loading="lazy" decoding="async" />
+          ))
+        }
+      </div>
+    </div>
+    <div class="gl" data-gl aria-hidden="true"></div>
+    <div class="shadow" aria-hidden="true"></div>
+  </div>
+
+  <div class="controls">
+    <fieldset class="segmented">
+      <legend class="visually-hidden">Lado do cartão</legend>
+      <label><input type="radio" name="card-side" value="front" checked data-card-side /><span>Frente</span></label>
+      <label><input type="radio" name="card-side" value="back" data-card-side /><span>Verso</span></label>
+    </fieldset>
+    <fieldset class="segmented">
+      <legend class="visually-hidden">Cartão de</legend>
+      {
+        founders.map((f, i) => (
+          <label>
+            <input type="radio" name="card-person" value={f.id} checked={i === 1} data-card-person data-label={`${f.name}, ${f.role}`} />
+            <span>{f.firstName}</span>
+          </label>
+        ))
+      }
+    </fieldset>
+  </div>
+
+  <div class="contacts">
+    {
+      founders.map((f) => (
+        <ul role="list" class={`contact-row person-${f.id}`} aria-label={`Contatos de ${f.name}`}>
+          <li>
+            <a href={founderWa(f)} target="_blank" rel="noopener" data-location="hero-card">
+              <BrandIcon name="whatsapp" size={16} /> WhatsApp de {f.firstName}
+            </a>
+          </li>
+          <li>
+            <a href={`mailto:${f.email}`} data-location="hero-card">
+              <Icon name="mail" size={16} /> E-mail
+            </a>
+          </li>
+          <li>
+            <a href={f.linkedin} target="_blank" rel="noopener" data-location="hero-card">
+              <BrandIcon name="linkedin" size={16} /> LinkedIn
+            </a>
+          </li>
+        </ul>
+      ))
+    }
+  </div>
+  <p class="hint" data-card-hint>Arraste o cartão ou use os botões para virar.</p>
+  <p class="visually-hidden" aria-live="polite" data-card-status></p>
+</div>
+
+<script>
+  import '../../scripts/card3d/boot.ts';
+</script>
+
+<style>
+  .card-stage {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-4);
+  }
+  .stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.42;
+    display: grid;
+    place-items: center;
+    perspective: 1400px;
+  }
+
+  /* ---------------------------------------------------- CSS card (default) */
+  .css-card {
+    width: 82%;
+    aspect-ratio: 9 / 5;
+    transition: opacity var(--dur-3) ease;
+  }
+  .css-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(10deg) rotateY(-20deg) rotateZ(2deg);
+    transition: transform var(--dur-4) var(--ease-out);
+  }
+  .face {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 1.5%/2.7%;
+    backface-visibility: hidden;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.06) inset,
+      0 40px 60px -30px rgb(0 0 0 / 0.75);
+  }
+  .face-back {
+    transform: rotateY(180deg);
+    display: none;
+  }
+  .card-stage:has([data-card-person][value='tricia']:checked) .back-tricia,
+  .card-stage:has([data-card-person][value='ricardo']:checked) .back-ricardo {
+    display: block;
+  }
+  .card-stage:has([data-card-side][value='back']:checked) .css-card-inner {
+    transform: rotateX(10deg) rotateY(160deg) rotateZ(-2deg);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .css-card {
+      animation: float 7s var(--ease-in-out) infinite;
+    }
+  }
+  @keyframes float {
+    50% {
+      translate: 0 -10px;
+    }
+  }
+
+  /* ---------------------------------------------------- WebGL layer */
+  .gl {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 400ms ease;
+    touch-action: pan-y;
+  }
+  .gl :global(canvas) {
+    width: 100% !important;
+    height: 100% !important;
+    cursor: grab;
+  }
+  .gl :global(canvas:active) {
+    cursor: grabbing;
+  }
+  .card-stage:global(.is-3d) .gl {
+    opacity: 1;
+  }
+  .card-stage:global(.is-3d) .css-card {
+    opacity: 0;
+    animation: none;
+  }
+  .shadow {
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    bottom: 4%;
+    height: 9%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(0 0 0 / 0.55), transparent);
+    filter: blur(6px);
+    z-index: -1;
+  }
+
+  /* ---------------------------------------------------- controls */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+  .segmented {
+    display: inline-flex;
+    padding: 4px;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: rgb(255 255 255 / 0.06);
+    box-shadow: var(--ring-dark);
+  }
+  .segmented label {
+    position: relative;
+  }
+  .segmented input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .segmented span {
+    display: inline-grid;
+    place-items: center;
+    min-height: 2.5rem;
+    min-width: 5.5rem;
+    padding: 0.4rem 1rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.925rem;
+    font-weight: 600;
+    color: var(--ink-200);
+    transition:
+      background var(--dur-2) ease,
+      color var(--dur-2) ease;
+  }
+  .segmented input:checked + span {
+    background: var(--lime-400);
+    color: var(--ink-950);
+  }
+  .segmented input:focus-visible + span {
+    outline: 2px solid var(--lime-400);
+    outline-offset: 3px;
+  }
+  .segmented label:hover input:not(:checked) + span {
+    color: #fff;
+  }
+
+  .contacts {
+    min-height: 1.5rem;
+  }
+  .contact-row {
+    display: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2) var(--space-5);
+    font-size: 0.925rem;
+  }
+  .card-stage:has([data-card-person][value='tricia']:checked) .person-tricia,
+  .card-stage:has([data-card-person][value='ricardo']:checked) .person-ricardo {
+    display: flex;
+  }
+  .contact-row a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--ink-200);
+    text-decoration: none;
+  }
+  .contact-row a:hover {
+    color: var(--lime-400);
+    text-decoration: underline;
+  }
+  .hint {
+    display: none;
+    font-size: var(--step--1);
+    color: var(--ink-300);
+    margin-top: calc(var(--space-2) * -1);
+  }
+  .card-stage:global(.is-3d) .hint {
+    display: block;
+  }
+</style>

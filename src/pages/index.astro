@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/home/Hero.astro';
+import ProofStrip from '../components/home/ProofStrip.astro';
+import Journey from '../components/home/Journey.astro';
+import Ecosystem from '../components/home/Ecosystem.astro';
+import Method from '../components/home/Method.astro';
+import Differentiators from '../components/home/Differentiators.astro';
+import Sectors from '../components/home/Sectors.astro';
+import Founders from '../components/home/Founders.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { generalFaq } from '../data/content.ts';
+import { faqPage } from '../lib/seo.ts';
+
+const schema = [faqPage(Astro.site, '/', generalFaq)];
+---
+
+<BaseLayout path="/" schema={schema}>
+  <Hero />
+  <ProofStrip />
+  <Journey />
+  <Ecosystem />
+  <Method />
+  <Differentiators />
+  <Sectors />
+  <Founders />
+  <Faq items={generalFaq} tone="white" />
+  <CtaBand />
+</BaseLayout>

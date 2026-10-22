@@ -1,0 +1,189 @@
+---
+import { Picture } from 'astro:assets';
+import tricia from '../../assets/people/tricia.jpg';
+import ricardo from '../../assets/people/ricardo.jpg';
+import Icon from '../ui/Icon.astro';
+import BrandIcon from '../ui/BrandIcon.astro';
+import { founders } from '../../data/founders.ts';
+import { founderWa } from '../../lib/links.ts';
+
+interface Props {
+  detailed?: boolean;
+  id?: string;
+}
+const { detailed = false, id = 'socios' } = Astro.props;
+const photos = { tricia, ricardo };
+---
+
+<section class="section on-dark founders" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Sócios</p>
+      <h2 id={`${id}-title`}>Quem vai sentar à mesa com você.</h2>
+      <p class="lead">
+        Executivos com trajetória em grandes empresas de serviços, formação na FGV, FAAP e IESE e a experiência de quem
+        já esteve do outro lado da mesa.
+      </p>
+    </div>
+    <ul role="list" class="grid">
+      {
+        founders.map((f) => (
+          <li class="person" id={detailed ? f.id : undefined} data-reveal>
+            <Picture
+              src={photos[f.id]}
+              formats={['avif', 'webp']}
+              alt={`${f.name}, ${f.role} da TCAN`}
+              widths={[320, 480]}
+              sizes="(max-width: 40rem) 100vw, 240px"
+              class="photo"
+              position="attention"
+              fit="cover"
+              width={480}
+              height={560}
+            />
+            <div class="info">
+              <h3>{f.name}</h3>
+              <p class="role">
+                {f.role} · {f.headline}
+              </p>
+              {detailed ? f.bioLong.map((b) => <p class="bio">{b}</p>) : <p class="bio">{f.bioShort}</p>}
+              {detailed && (
+                <ul role="list" class="chips">
+                  {f.sectors.map((s) => (
+                    <li class="chip">{s}</li>
+                  ))}
+                </ul>
+              )}
+              {!detailed && (
+                <blockquote class="quote">
+                  <p>“{f.quote}”</p>
+                </blockquote>
+              )}
+              <ul role="list" class="links">
+                <li>
+                  <a href={f.linkedin} target="_blank" rel="noopener">
+                    <BrandIcon name="linkedin" size={18} /> LinkedIn
+                  </a>
+                </li>
+                <li>
+                  <a href={founderWa(f)} target="_blank" rel="noopener" data-location="founders">
+                    <BrandIcon name="whatsapp" size={18} /> WhatsApp
+                  </a>
+                </li>
+                <li>
+                  <a href={`mailto:${f.email}`} data-location="founders">
+                    <Icon name="mail" size={18} /> {f.email}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .founders {
+    background:
+      radial-gradient(50rem 30rem at 100% 0%, rgb(23 89 42 / 0.35), transparent 70%),
+      var(--ink-900);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+  .person {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+    gap: var(--space-5);
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    background: rgb(255 255 255 / 0.04);
+    box-shadow: var(--ring-dark);
+    align-items: start;
+  }
+  .person :global(.photo),
+  .person :global(picture) {
+    display: block;
+    width: 100%;
+  }
+  .person :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 6 / 7;
+    object-fit: cover;
+    object-position: center 20%;
+    border-radius: var(--radius-md);
+    background: var(--ink-850);
+  }
+  .info {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+  h3 {
+    font-size: var(--step-2);
+  }
+  .role {
+    color: var(--lime-400);
+    font-weight: 600;
+    font-size: 0.925rem;
+  }
+  .bio {
+    color: var(--ink-200);
+    font-size: 0.975rem;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .chip {
+    background: rgb(255 255 255 / 0.07);
+    color: var(--ink-200);
+  }
+  .quote {
+    margin: var(--space-2) 0 0;
+    padding-left: var(--space-4);
+    border-left: 2px solid var(--lime-400);
+    font-family: var(--font-head);
+    font-size: var(--step-0);
+    font-weight: 500;
+    line-height: 1.45;
+    color: #fff;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin-top: var(--space-2);
+    font-size: 0.925rem;
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--ink-200);
+    text-decoration: none;
+  }
+  .links a:hover {
+    color: var(--lime-400);
+    text-decoration: underline;
+  }
+  @media (max-width: 72rem) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 36rem) {
+    .person {
+      grid-template-columns: 1fr;
+    }
+    .person :global(img) {
+      aspect-ratio: 4 / 3;
+    }
+  }
+</style>

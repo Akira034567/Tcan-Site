@@ -1,0 +1,353 @@
+---
+import { url } from '../../lib/url.ts';
+/**
+ * LGPD/ANPD-compliant consent (Guia Orientativo de Cookies, ANPD 2022):
+ * opt-in, granular, reject as easy as accept, nothing pre-ticked, withdraw any time.
+ * Google Analytics is not requested at all before the visitor opts in.
+ */
+import { company, env } from '../../data/company.ts';
+import { cookieTable } from '../../data/cookies.ts';
+---
+
+<div
+  class="consent-root"
+  data-consent-root
+  data-ga4-id={env.ga4Id ?? ''}
+  data-policy-version={company.policyVersion}
+>
+  <section class="consent-banner on-dark" aria-labelledby="consent-title" hidden data-consent-banner>
+    <div class="banner-text">
+      <h2 id="consent-title" class="banner-title">Sua privacidade, sua escolha</h2>
+      <p>
+        Usamos cookies necessários para o site funcionar e, só com a sua permissão, cookies estatísticos do Google
+        Analytics para entender como o site é usado e melhorá-lo. Você pode mudar sua escolha a qualquer momento em
+        “Preferências de cookies”, no rodapé. <a href={url('/politica-de-cookies/')}>Política de Cookies</a>.
+      </p>
+    </div>
+    <div class="banner-actions">
+      <button type="button" class="consent-btn" data-consent="reject">Rejeitar opcionais</button>
+      <button type="button" class="consent-btn" data-consent="accept">Aceitar todos</button>
+      <button type="button" class="consent-link" data-consent-open>Personalizar</button>
+    </div>
+  </section>
+
+  <dialog class="consent-dialog" aria-labelledby="consent-dialog-title" data-consent-dialog>
+    <form method="dialog" class="dialog-inner" data-consent-form>
+      <div class="dialog-head">
+        <h2 id="consent-dialog-title">Preferências de cookies</h2>
+        <button type="submit" value="close" class="close" aria-label="Fechar preferências">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+        </button>
+      </div>
+      <p class="dialog-intro">
+        Escolha quais categorias você autoriza. Os cookies necessários não podem ser desativados porque guardam a sua
+        própria escolha e garantem o funcionamento do site. Detalhes na <a href={url('/politica-de-cookies/')}>Política de Cookies</a>.
+      </p>
+
+      <ul role="list" class="categories">
+        <li class="category">
+          <div class="category-row">
+            <label class="switch">
+              <span class="category-name">Necessários</span>
+              <input id="consent-necessary" type="checkbox" role="switch" checked disabled aria-describedby="desc-necessary" />
+              <span class="track" aria-hidden="true"></span>
+            </label>
+            <span class="always">Sempre ativos</span>
+          </div>
+          <p id="desc-necessary" class="category-desc">
+            Guardam suas preferências de privacidade. Não identificam você nem rastreiam sua navegação.
+          </p>
+        </li>
+        <li class="category">
+          <div class="category-row">
+            <label class="switch">
+              <span class="category-name">Estatísticos</span>
+              <input id="consent-analytics" name="analytics" type="checkbox" role="switch" aria-describedby="desc-analytics" data-consent-analytics />
+              <span class="track" aria-hidden="true"></span>
+            </label>
+          </div>
+          <p id="desc-analytics" class="category-desc">
+            Google Analytics 4: medem visitas e uso das páginas de forma agregada, para melhorarmos o site. Sem publicidade
+            e sem sinais do Google para anúncios. Os dados podem ser processados nos EUA pelo Google.
+          </p>
+        </li>
+      </ul>
+
+      <details class="cookie-details">
+        <summary>Ver a lista de cookies</summary>
+        <section class="table-wrap" tabindex="0" aria-label="Lista de cookies">
+          <table>
+            <caption class="visually-hidden">Cookies usados no site</caption>
+            <thead>
+              <tr><th scope="col">Nome</th><th scope="col">Categoria</th><th scope="col">Finalidade</th><th scope="col">Duração</th></tr>
+            </thead>
+            <tbody>
+              {cookieTable.map((c) => (
+                <tr><td><code>{c.name}</code></td><td>{c.category}</td><td>{c.purpose}</td><td>{c.duration}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      </details>
+
+      <div class="dialog-actions">
+        <button type="button" class="consent-btn" data-consent="reject">Rejeitar todos</button>
+        <button type="button" class="consent-btn" data-consent="save">Salvar escolhas</button>
+        <button type="button" class="consent-btn" data-consent="accept">Aceitar todos</button>
+      </div>
+    </form>
+  </dialog>
+</div>
+
+<script>
+  import '../../scripts/consent/index.ts';
+</script>
+
+<style>
+  .consent-banner {
+    position: fixed;
+    z-index: 60;
+    inset: auto var(--gutter) var(--gutter) var(--gutter);
+    max-width: 64rem;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-5) var(--space-6);
+    align-items: center;
+    padding: var(--space-5) var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--ink-850);
+    color: var(--text);
+    box-shadow:
+      var(--ring-dark),
+      0 30px 60px -20px rgb(0 0 0 / 0.65);
+    font-size: 0.925rem;
+    line-height: 1.55;
+  }
+  .banner-title {
+    font-size: var(--step-1);
+    margin-bottom: var(--space-1);
+  }
+  .banner-text p {
+    color: var(--ink-200);
+    max-width: 60ch;
+  }
+  .banner-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-items: center;
+    justify-content: flex-end;
+  }
+  /* Accept and reject share one style: neither is nudged (ANPD guidance). */
+  .consent-btn {
+    min-height: 2.75rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid currentColor;
+    background: transparent;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.925rem;
+    white-space: nowrap;
+  }
+  .consent-btn:hover {
+    background: rgb(255 255 255 / 0.08);
+  }
+  .consent-link {
+    min-height: 2.75rem;
+    padding: 0.55rem 0.6rem;
+    background: none;
+    border: 0;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.925rem;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+  @media (max-width: 48rem) {
+    .consent-banner {
+      grid-template-columns: 1fr;
+      padding: var(--space-5);
+    }
+    .banner-actions {
+      justify-content: stretch;
+    }
+    .banner-actions .consent-btn {
+      flex: 1 1 10rem;
+    }
+  }
+
+  .consent-dialog {
+    width: min(40rem, calc(100vw - 2rem));
+    max-height: min(90dvh, 48rem);
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: var(--ink-850);
+    color: #f2f4f0;
+    box-shadow: 0 40px 80px -20px rgb(0 0 0 / 0.75);
+  }
+  .consent-dialog::backdrop {
+    background: rgb(12 15 13 / 0.65);
+    backdrop-filter: blur(3px);
+  }
+  .dialog-inner {
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-6);
+  }
+  .dialog-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .dialog-head h2 {
+    font-size: var(--step-2);
+    color: inherit;
+  }
+  .close {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border-radius: 50%;
+    border: 1px solid rgb(255 255 255 / 0.14);
+    background: none;
+    color: inherit;
+  }
+  .dialog-intro,
+  .category-desc {
+    color: var(--ink-200);
+    font-size: 0.925rem;
+  }
+  .dialog-intro a {
+    color: var(--lime-400);
+  }
+  .categories {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .category {
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    background: rgb(255 255 255 / 0.04);
+    box-shadow: var(--ring-dark);
+  }
+  .category-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .category-desc {
+    margin-top: var(--space-2);
+  }
+  .switch {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex: 1;
+    cursor: pointer;
+    position: relative;
+  }
+  .category-name {
+    font-weight: 600;
+    flex: 1;
+  }
+  .switch input {
+    position: absolute;
+    opacity: 0;
+    inline-size: 3rem;
+    block-size: 1.75rem;
+    right: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .switch input:disabled {
+    cursor: not-allowed;
+  }
+  .track {
+    inline-size: 3rem;
+    block-size: 1.75rem;
+    border-radius: var(--radius-pill);
+    background: var(--ink-700);
+    border: 1px solid var(--ink-400);
+    position: relative;
+    flex: none;
+    transition: background var(--dur-2) ease;
+  }
+  .track::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0.2rem;
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    border-radius: 50%;
+    background: #f2f4f0;
+    translate: 0 -50%;
+    transition: left var(--dur-2) var(--ease-out);
+  }
+  .switch input:checked + .track {
+    background: var(--lime-400);
+    border-color: var(--lime-400);
+  }
+  .switch input:checked + .track::after {
+    left: calc(100% - 1.45rem);
+    background: var(--ink-950);
+  }
+  .switch input:focus-visible + .track {
+    outline: 2px solid var(--lime-400);
+    outline-offset: 3px;
+  }
+  .switch input:disabled + .track {
+    opacity: 0.7;
+  }
+  .always {
+    font-size: var(--step--1);
+    color: var(--lime-400);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .cookie-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--lime-400);
+    padding-block: var(--space-2);
+  }
+  .table-wrap {
+    overflow-x: auto;
+    margin-top: var(--space-3);
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.85rem;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 0.55rem 0.6rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+    vertical-align: top;
+  }
+  th {
+    color: var(--ink-300);
+    font-weight: 600;
+  }
+  code {
+    font-size: 0.85em;
+    color: var(--lime-300);
+  }
+  .dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    justify-content: flex-end;
+  }
+  .dialog-actions .consent-btn {
+    flex: 1 1 9rem;
+  }
+</style>

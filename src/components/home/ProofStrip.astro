@@ -1,0 +1,74 @@
+---
+import { proof } from '../../data/content.ts';
+---
+
+<section class="proof" aria-label="A TCAN em números">
+  <div class="container">
+    <dl class="items">
+      {
+        proof.map((p, i) => (
+          <div class="item" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <dt class="label">{p.label}</dt>
+            <dd class="value">
+              <span class="num">{p.value}</span> <span class="unit">{p.unit}</span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .proof {
+    background: var(--white);
+    border-bottom: 1px solid var(--line);
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+  }
+  .items {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+  .item {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: var(--space-2);
+    padding-left: var(--space-5);
+    border-left: 2px solid var(--ink-100);
+  }
+  .value {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-family: var(--font-head);
+    color: var(--ink-900);
+  }
+  .num {
+    font-size: var(--step-5);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .unit {
+    font-size: var(--step-1);
+    font-weight: 500;
+    color: var(--forest-800);
+  }
+  .label {
+    font-size: 0.925rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+  }
+  @media (max-width: 60rem) {
+    .items {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: var(--space-6);
+    }
+    .value {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.15rem;
+    }
+  }
+</style>

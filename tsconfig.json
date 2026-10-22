@@ -1,0 +1,25 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [
+    ".astro/types.d.ts",
+    "**/*"
+  ],
+  "exclude": [
+    "dist",
+    "dist-test",
+    "dist-prod",
+    "apresentacao",
+    "node_modules",
+    ".private",
+    "test-results",
+    "playwright-report",
+    "screenshots"
+  ],
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "types": [
+      "node"
+    ]
+  }
+}

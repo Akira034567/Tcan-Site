@@ -1,0 +1,276 @@
+---
+import { url } from '../../lib/url.ts';
+/**
+ * Contact form.
+ * - Endpoint mode (PUBLIC_CONTACT_ENDPOINT set): POST (fetch with JS, native without JS → /contato/obrigado/).
+ * - Fallback mode (no endpoint yet): the message is composed and opened in WhatsApp or e-mail.
+ * Legal basis: art. 7º, V and IX LGPD (pre-contract steps / legitimate interest), so no consent checkbox.
+ */
+import { company, env } from '../../data/company.ts';
+import { founders } from '../../data/founders.ts';
+import { pillars } from '../../data/pillars.ts';
+import Icon from '../ui/Icon.astro';
+import BrandIcon from '../ui/BrandIcon.astro';
+
+const endpoint = env.contactEndpoint;
+const routing = JSON.stringify({
+  routing: company.routing,
+  founders: Object.fromEntries(founders.map((f) => [f.id, { name: f.firstName, phone: f.phoneE164, email: f.email }])),
+});
+---
+
+<div class:list={['form-wrap', { 'no-endpoint': !endpoint }]}>
+  <noscript>
+    {
+      !endpoint && (
+        <p class="noscript">
+          Para nos enviar uma mensagem, use o WhatsApp ou o e-mail de um dos sócios ao lado. O formulário precisa de
+          JavaScript habilitado.
+        </p>
+      )
+    }
+  </noscript>
+  <form
+    class:list={['form', { 'needs-js': !endpoint }]}
+    method="post"
+    action={endpoint ?? undefined}
+    novalidate
+    data-contact-form
+    data-endpoint={endpoint ?? ''}
+    data-routing={routing}
+    aria-describedby="form-intro"
+  >
+    <p id="form-intro" class="intro">Campos marcados com <span aria-hidden="true">*</span><span class="visually-hidden">asterisco</span> são obrigatórios.</p>
+
+    <div class="summary" role="alert" tabindex="-1" hidden data-error-summary>
+      <h3>Revise os campos abaixo:</h3>
+      <ul data-error-list></ul>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label for="f-nome">Nome <span aria-hidden="true">*</span></label>
+        <input id="f-nome" name="nome" type="text" autocomplete="name" required maxlength="120" aria-describedby="f-nome-err" />
+        <p class="error" id="f-nome-err" data-error-for="nome"></p>
+      </div>
+      <div class="field">
+        <label for="f-email">E-mail corporativo <span aria-hidden="true">*</span></label>
+        <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="160" aria-describedby="f-email-err" />
+        <p class="error" id="f-email-err" data-error-for="email"></p>
+      </div>
+      <div class="field">
+        <label for="f-empresa">Empresa <span aria-hidden="true">*</span></label>
+        <input id="f-empresa" name="empresa" type="text" autocomplete="organization" required maxlength="120" aria-describedby="f-empresa-err" />
+        <p class="error" id="f-empresa-err" data-error-for="empresa"></p>
+      </div>
+      <div class="field">
+        <label for="f-cargo">Cargo</label>
+        <input id="f-cargo" name="cargo" type="text" autocomplete="organization-title" maxlength="120" />
+      </div>
+      <div class="field">
+        <label for="f-telefone">Telefone ou WhatsApp</label>
+        <input id="f-telefone" name="telefone" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" />
+      </div>
+      <div class="field">
+        <label for="f-interesse">Área de interesse</label>
+        <div class="select">
+          <select id="f-interesse" name="interesse" data-interest>
+            <option value="">Ainda não sei</option>
+            {pillars.map((p) => <option value={p.id}>{p.name}</option>)}
+          </select>
+          <Icon name="chevron-down" size={18} />
+        </div>
+      </div>
+      <div class="field full">
+        <label for="f-mensagem">Como podemos ajudar? <span aria-hidden="true">*</span></label>
+        <textarea id="f-mensagem" name="mensagem" rows="5" required maxlength="2000" aria-describedby="f-mensagem-err f-mensagem-hint"></textarea>
+        <p class="hint" id="f-mensagem-hint">Conte o desafio, o contexto e o prazo, se houver.</p>
+        <p class="error" id="f-mensagem-err" data-error-for="mensagem"></p>
+      </div>
+    </div>
+
+    <div class="hp" aria-hidden="true">
+      <label for="f-website">Não preencha este campo</label>
+      <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+    <input type="hidden" name="origem" value="site" />
+
+    <p class="privacy">
+      Usaremos seus dados para responder ao seu contato e, se necessário, envolver especialistas do nosso ecossistema
+      para atender à sua demanda. Saiba mais na <a href={url('/politica-de-privacidade/')}>Política de Privacidade</a>.
+    </p>
+
+    <div class="actions">
+      {
+        endpoint ? (
+          <button class="btn" type="submit">
+            Enviar mensagem <Icon name="send" size={18} />
+          </button>
+        ) : (
+          <>
+            <button class="btn" type="submit" value="whatsapp" data-channel="whatsapp">
+              <BrandIcon name="whatsapp" size={18} /> Enviar pelo WhatsApp
+            </button>
+            <button class="btn btn--ghost" type="submit" value="email" data-channel="email">
+              <Icon name="mail" size={18} /> Enviar por e-mail
+            </button>
+          </>
+        )
+      }
+    </div>
+    <p class="status" role="status" data-form-status></p>
+  </form>
+</div>
+
+<script>
+  import '../../scripts/contact-form.ts';
+</script>
+
+<style>
+  .noscript {
+    padding: var(--space-5);
+    border-radius: var(--radius-md);
+    background: var(--lime-100);
+    color: var(--forest-900);
+  }
+  .form {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .intro {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4) var(--space-4);
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+  }
+  .full {
+    grid-column: 1 / -1;
+  }
+  label {
+    font-weight: 600;
+    font-size: 0.925rem;
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 0.9rem;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--ink-400);
+    background: var(--white);
+    color: var(--ink-900);
+    font-size: 1rem;
+    line-height: 1.4;
+    transition:
+      border-color var(--dur-2) ease,
+      box-shadow var(--dur-2) ease;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+  input:hover,
+  select:hover,
+  textarea:hover {
+    border-color: var(--ink-500);
+  }
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    border-color: var(--forest-800);
+    box-shadow: 0 0 0 3px rgb(23 89 42 / 0.2);
+  }
+  [aria-invalid='true'] {
+    border-color: var(--danger);
+  }
+  .select {
+    position: relative;
+  }
+  select {
+    appearance: none;
+    padding-right: 2.5rem;
+  }
+  .select :global(svg) {
+    position: absolute;
+    right: 0.85rem;
+    top: 50%;
+    translate: 0 -50%;
+    pointer-events: none;
+    color: var(--ink-500);
+  }
+  .hint {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+  .error {
+    font-size: var(--step--1);
+    color: var(--danger);
+    font-weight: 500;
+  }
+  .error:empty {
+    display: none;
+  }
+  .summary {
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--danger);
+    background: #fdf1ef;
+    color: var(--ink-900);
+  }
+  .summary h3 {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    margin-bottom: var(--space-2);
+  }
+  .summary :global(ul) {
+    padding-left: 1.2rem;
+  }
+  .summary :global(a) {
+    color: var(--danger);
+    font-weight: 600;
+  }
+  .hp {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .privacy {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+  .status:empty {
+    display: none;
+  }
+  .status {
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+    background: var(--lime-100);
+    color: var(--forest-900);
+    font-weight: 500;
+  }
+  @media (max-width: 40rem) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .actions :global(.btn) {
+      width: 100%;
+    }
+  }
+</style>

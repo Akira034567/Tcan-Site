@@ -1,0 +1,18 @@
+---
+import { isPending, type Maybe } from '../../lib/placeholder.ts';
+
+interface Props {
+  v: Maybe<string>;
+}
+const { v } = Astro.props;
+---
+
+{
+  isPending(v) ? (
+    <span class="pending" data-pending={v.label} title={`Pendente: ${v.label}`}>
+      {v.preview || v.label}
+    </span>
+  ) : (
+    v
+  )
+}

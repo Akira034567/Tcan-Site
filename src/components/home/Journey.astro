@@ -1,0 +1,100 @@
+---
+import Icon from '../ui/Icon.astro';
+import { journey } from '../../data/content.ts';
+---
+
+<section class="section journey" aria-labelledby="journey-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Quem somos</p>
+      <h2 id="journey-title">Estrategistas de negócios e hub de conexões.</h2>
+      <p class="lead">
+        Atuamos onde estratégia, transformação, experiência e impacto se encontram: entendemos o desafio, conectamos as
+        pessoas e as soluções certas e acompanhamos a execução de perto.
+      </p>
+    </div>
+    <ol class="steps" role="list">
+      {
+        journey.map((step, i) => (
+          <li class="step" data-reveal style={`--reveal-delay:${i * 100}ms`}>
+            <span class="icon-badge">
+              <Icon name={step.icon} />
+            </span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .journey {
+    padding-bottom: 0;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+    counter-reset: step;
+  }
+  .step {
+    position: relative;
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    padding: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    border: 1px solid var(--line);
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: calc(var(--space-5) * -0.5 - 0.5rem);
+    inline-size: 1rem;
+    block-size: 1rem;
+    border-top: 2px solid var(--ink-400);
+    border-right: 2px solid var(--ink-400);
+    rotate: 45deg;
+    translate: -25% -50%;
+    z-index: 1;
+    background: transparent;
+  }
+  .step:last-child {
+    background: var(--forest-950);
+    border-color: transparent;
+    color: #f2f6ef;
+  }
+  .step:last-child h3 {
+    color: #fff;
+  }
+  .step:last-child p {
+    color: #c9d6c5;
+  }
+  .step:last-child .icon-badge {
+    background: rgb(112 191 60 / 0.14);
+    color: var(--lime-400);
+  }
+  h3 {
+    font-size: var(--step-2);
+    margin-top: var(--space-2);
+  }
+  .step p {
+    color: var(--text-muted);
+  }
+  @media (max-width: 60rem) {
+    .steps {
+      grid-template-columns: 1fr;
+    }
+    .step:not(:last-child)::after {
+      top: auto;
+      bottom: calc(var(--space-5) * -0.5 - 0.5rem);
+      right: 50%;
+      rotate: 135deg;
+      translate: 50% -25%;
+    }
+  }
+</style>

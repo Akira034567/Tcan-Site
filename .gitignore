@@ -1,0 +1,28 @@
+# build output
+dist/
+dist-test/
+.astro/
+
+# dependencies
+node_modules/
+
+# env and private material (partner research, denylist)
+.env
+.env.*
+!.env.example
+.private/
+
+# test output
+test-results/
+playwright-report/
+.lighthouseci/
+
+# Confidential: the slide-deck generator contains a client proposal and partner names.
+apresentacao/
+
+# OS
+.DS_Store
+Thumbs.db
+dist-prod/
+dist-gh/
+gh-root/

@@ -1,0 +1,242 @@
+---
+import { url } from '../../lib/url.ts';
+/** The 4 × 3 ecosystem: decorative ring (echo of the company deck) + the accessible card grid. */
+import { Image } from 'astro:assets';
+import logo from '../../assets/brand/tcan-dark.png';
+import Icon from '../ui/Icon.astro';
+import { icons } from '../../lib/icons.ts';
+import { pillars } from '../../data/pillars.ts';
+import { pillarTone } from '../../lib/tones.ts';
+
+interface Props {
+  headingLevel?: 'h2' | 'h1';
+  eyebrow?: string;
+  title?: string;
+  intro?: string;
+}
+const {
+  headingLevel = 'h2',
+  eyebrow = 'Ecossistema de Soluções Empresariais',
+  title = 'Quatro frentes. Doze soluções. Um só parceiro.',
+  intro = 'Cada frente reúne especialistas selecionados e coordenados pela TCAN. Você contrata uma solução ou combina várias, sempre com um único ponto de contato.',
+} = Astro.props;
+const Heading = headingLevel;
+
+// Ring geometry (viewBox 400 × 400), clockwise from top-left, matching the 2 × 2 card grid
+// (marca | inovação / esg | pessoas): top-left, top-right, bottom-right, bottom-left.
+const order = ['marca', 'inovacao', 'pessoas', 'esg'] as const;
+const phrases = title.split(/(?<=\.)\s+/);
+const cx = 200;
+const cy = 200;
+const R = 188;
+const r = 118;
+const gap = 2.2;
+const rad = (deg: number) => (deg * Math.PI) / 180;
+const pt = (radius: number, deg: number) => [cx + radius * Math.cos(rad(deg)), cy + radius * Math.sin(rad(deg))];
+const segments = order.map((id, i) => {
+  const a0 = 180 + i * 90 + gap;
+  const a1 = 180 + (i + 1) * 90 - gap;
+  const [x0, y0] = pt(R, a0);
+  const [x1, y1] = pt(R, a1);
+  const [x2, y2] = pt(r, a1);
+  const [x3, y3] = pt(r, a0);
+  const d = `M${x0} ${y0} A${R} ${R} 0 0 1 ${x1} ${y1} L${x2} ${y2} A${r} ${r} 0 0 0 ${x3} ${y3} Z`;
+  const [ix, iy] = pt((R + r) / 2, (a0 + a1) / 2);
+  const pillar = pillars.find((p) => p.id === id)!;
+  return { d, ix, iy, pillar, tone: pillarTone[id], Icon: icons[pillar.icon] };
+});
+---
+
+<section class="section ecosystem" aria-labelledby="eco-title">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">{eyebrow}</p>
+      <Heading id="eco-title">
+        {phrases.map((p, i) => (
+          <>
+            <span class="phrase">{p}</span>
+            {i < phrases.length - 1 && ' '}
+          </>
+        ))}
+      </Heading>
+      <p class="lead">{intro}</p>
+    </div>
+
+    <div class="layout">
+      <div class="ring-wrap" aria-hidden="true">
+        <svg class="ring" viewBox="0 0 400 400" role="presentation">
+          {
+            segments.map((s) => (
+              <a href={url(`/solucoes/${s.pillar.slug}/`)} tabindex="-1" class="seg">
+                <path d={s.d} fill={s.tone.bg} />
+                <s.Icon x={s.ix - 16} y={s.iy - 16} size={32} color={s.tone.fg} stroke-width={1.75} />
+              </a>
+            ))
+          }
+        </svg>
+        <Image class="ring-logo" src={logo} alt="" width={180} densities={[1, 2]} />
+      </div>
+
+      <ul role="list" class="cards">
+        {
+          pillars.map((p, i) => (
+            <li class="card pillar" data-reveal style={`--reveal-delay:${(i % 2) * 90}ms;--tone-bg:${pillarTone[p.id].bg};--tone-fg:${pillarTone[p.id].fg}`}>
+              <div class="pillar-head">
+                <span class="icon-badge tone">
+                  <Icon name={p.icon} />
+                </span>
+                <h3>
+                  <a href={url(`/solucoes/${p.slug}/`)} class="pillar-link">
+                    {p.name}
+                  </a>
+                </h3>
+              </div>
+              <p class="tagline">{p.tagline}</p>
+              <ul role="list" class="solutions">
+                {p.solutions.map((s) => (
+                  <li>
+                    <a href={url(`/solucoes/${p.slug}/#${s.anchor}`)}>
+                      <span>{s.name}</span>
+                      <Icon name="arrow-right" size={16} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .ring-wrap {
+    align-self: center;
+    display: grid;
+    place-items: center;
+  }
+  .ring {
+    width: 100%;
+    max-width: 26rem;
+    grid-area: 1 / 1;
+    overflow: visible;
+  }
+  .seg path {
+    transition:
+      transform var(--dur-3) var(--ease-out),
+      filter var(--dur-3) ease;
+    transform-origin: 200px 200px;
+  }
+  .seg:hover path {
+    transform: scale(1.035);
+    filter: drop-shadow(0 8px 14px rgb(12 15 13 / 0.25));
+  }
+  :global(.ring-logo) {
+    grid-area: 1 / 1;
+    width: 34%;
+    max-width: 9rem;
+    height: auto;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+  .pillar {
+    position: relative;
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+    transition:
+      box-shadow var(--dur-3) var(--ease-out),
+      transform var(--dur-3) var(--ease-out),
+      border-color var(--dur-3) ease;
+  }
+  /* Badge in the same colour as the pillar's ring segment. */
+  .tone {
+    background: var(--tone-bg);
+    color: var(--tone-fg);
+  }
+  .pillar:hover {
+    box-shadow: var(--shadow-3);
+    border-color: transparent;
+    transform: translateY(-3px);
+  }
+  .pillar-head {
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
+  }
+  h3 {
+    font-size: var(--step-1);
+    line-height: 1.2;
+  }
+  .pillar-link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .pillar-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+  .pillar-link:hover {
+    text-decoration: underline;
+  }
+  .tagline {
+    color: var(--text-muted);
+    font-size: 0.975rem;
+  }
+  .solutions {
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+  .solutions a {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    padding-block: 0.7rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  .solutions a :global(svg) {
+    color: var(--forest-800);
+    flex: none;
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+  .solutions a:hover {
+    color: var(--forest-800);
+  }
+  .solutions a:hover :global(svg) {
+    transform: translateX(3px);
+  }
+  @media (max-width: 64rem) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .ring-wrap {
+      position: static;
+      max-width: 18rem;
+      margin-inline: auto;
+    }
+  }
+  @media (max-width: 40rem) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

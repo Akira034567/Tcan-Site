@@ -1,0 +1,60 @@
+---
+import { url } from '../lib/url.ts';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import Icon from '../components/ui/Icon.astro';
+import { pillars } from '../data/pillars.ts';
+---
+
+<BaseLayout path="/404/">
+  <PageHero
+    plain
+    eyebrow="Erro 404"
+    title="Esta página não foi encontrada."
+    lead="O endereço pode ter mudado ou não existir mais. Estes caminhos podem ajudar:"
+  >
+    <ul role="list" class="links">
+      {
+        pillars.map((p) => (
+          <li>
+            <a href={url(`/solucoes/${p.slug}/`)}>
+              <Icon name={p.icon} size={18} /> {p.name}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="ctas">
+      <a class="btn" href={url('/')}>Ir para o início <Icon name="arrow-right" /></a>
+      <a class="btn btn--ghost" href={url('/contato/')}>Fale com um sócio</a>
+    </div>
+  </PageHero>
+</BaseLayout>
+
+<style>
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
+    background: rgb(255 255 255 / 0.06);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .links a:hover {
+    color: var(--lime-300);
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+</style>

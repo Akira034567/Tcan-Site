@@ -1,0 +1,211 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import Founders from '../components/home/Founders.astro';
+import Method from '../components/home/Method.astro';
+import Sectors from '../components/home/Sectors.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/ui/Icon.astro';
+import { pageMeta } from '../data/pages.ts';
+import { company } from '../data/company.ts';
+import { founders } from '../data/founders.ts';
+import { persons } from '../lib/seo.ts';
+import type { IconName } from '../lib/icons.ts';
+import { getImage } from 'astro:assets';
+import tricia from '../assets/people/tricia.jpg';
+import ricardo from '../assets/people/ricardo.jpg';
+
+const path = '/sobre/';
+const meta = pageMeta(path);
+const [tImg, rImg] = await Promise.all([
+  getImage({ src: tricia, width: 400, format: 'jpg' }),
+  getImage({ src: ricardo, width: 400, format: 'jpg' }),
+]);
+const schema = persons(Astro.site, {
+  tricia: new URL(tImg.src, Astro.site).href,
+  ricardo: new URL(rImg.src, Astro.site).href,
+});
+
+const hub: { title: string; text: string; icon: IconName }[] = [
+  {
+    title: 'Curadoria',
+    text: 'Selecionamos especialistas com entrega comprovada em cada frente e montamos o time certo para o seu desafio.',
+    icon: 'user-round-check',
+  },
+  {
+    title: 'Coordenação',
+    text: 'A TCAN integra escopos, cronogramas e pessoas. Você fala com os sócios, não com uma lista de fornecedores.',
+    icon: 'waypoints',
+  },
+  {
+    title: 'Governança',
+    text: 'Metas, indicadores e rituais de acompanhamento definidos desde o início, com transparência em cada etapa.',
+    icon: 'shield-check',
+  },
+];
+---
+
+<BaseLayout path={path} schema={schema}>
+  <PageHero eyebrow="Quem somos" title="Estrategistas de negócios e hub de conexões." crumbs={meta.breadcrumb}>
+    <p class="manifesto">
+      Acreditamos que estratégia só vale quando chega à ponta. Por isso conectamos empresas, marcas, pessoas e soluções
+      para transformar desafios em oportunidades, e oportunidades em impacto.
+    </p>
+  </PageHero>
+
+  <section class="section purpose" aria-labelledby="purpose-title">
+    <div class="container layout">
+      <div class="section-head">
+        <p class="eyebrow">Compromisso</p>
+        <h2 id="purpose-title">Assumimos a missão do seu negócio.</h2>
+      </div>
+      <div class="quotes">
+        {
+          founders.map((f) => (
+            <figure class="quote-card">
+              <Icon name="quote" size={28} class="q-icon" />
+              <blockquote>
+                <p>{f.quote}</p>
+              </blockquote>
+              <figcaption>
+                {f.name}, {f.role}
+              </figcaption>
+            </figure>
+          ))
+        }
+        <p class="text">
+          Revisitamos a estratégia de atuação do parceiro, alinhados à sua visão de negócio e aos seus valores, e
+          trabalhamos no ciclo <strong>Construir-Medir-Aprender</strong>: um ciclo virtuoso de feedback, com melhoria
+          contínua e resultados monitorados.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Founders detailed />
+
+  <Method />
+
+  <section class="section hub" aria-labelledby="hub-title">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Como funciona o hub</p>
+        <h2 id="hub-title">Especialistas certos, um só responsável.</h2>
+        <p class="lead">
+          O ecossistema da TCAN reúne especialistas em marca, tecnologia, finanças, sustentabilidade, saúde, educação e
+          operação. A TCAN responde pelo conjunto.
+        </p>
+      </div>
+      <ul role="list" class="hub-grid">
+        {
+          hub.map((h, i) => (
+            <li class="card hub-item" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+              <span class="icon-badge">
+                <Icon name={h.icon} />
+              </span>
+              <h3>{h.title}</h3>
+              <p>{h.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Sectors />
+  <CtaBand title={company.signature + '.'} />
+</BaseLayout>
+
+<style>
+  .manifesto {
+    font-size: var(--step-1);
+    color: var(--ink-200);
+    max-width: 46rem;
+    line-height: 1.5;
+  }
+  .purpose {
+    background: var(--white);
+  }
+  .purpose .section-head {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .quotes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+  .quote-card {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: var(--space-4);
+    margin: 0;
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--ink-900);
+    color: #f2f4f0;
+  }
+  .quote-card:nth-child(2) {
+    background: var(--forest-950);
+  }
+  .quote-card :global(.q-icon) {
+    color: var(--lime-400);
+  }
+  blockquote {
+    margin: 0;
+    font-family: var(--font-head);
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  figcaption {
+    color: var(--ink-300);
+    font-size: 0.925rem;
+  }
+  .text {
+    grid-column: 1 / -1;
+    color: var(--text-muted);
+    font-size: var(--step-1);
+    line-height: 1.55;
+    max-width: none;
+  }
+  .hub {
+    background: var(--white);
+  }
+  .hub-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+  .hub-item {
+    background: var(--paper);
+    border-color: transparent;
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+  }
+  .hub-item h3 {
+    font-size: var(--step-2);
+    margin-top: var(--space-2);
+  }
+  .hub-item p {
+    color: var(--text-muted);
+  }
+  @media (max-width: 60rem) {
+    .layout,
+    .hub-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 40rem) {
+    .quotes {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

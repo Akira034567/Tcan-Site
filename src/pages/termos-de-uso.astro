@@ -1,0 +1,86 @@
+---
+import { url } from '../lib/url.ts';
+import LegalLayout from '../layouts/LegalLayout.astro';
+import Pending from '../components/ui/Pending.astro';
+import { company } from '../data/company.ts';
+
+const toc = [
+  { id: 'aceite', label: 'Sobre estes termos' },
+  { id: 'objeto', label: 'O que é este site' },
+  { id: 'propriedade', label: 'Propriedade intelectual' },
+  { id: 'uso', label: 'Uso permitido' },
+  { id: 'links', label: 'Links externos' },
+  { id: 'responsabilidade', label: 'Responsabilidade' },
+  { id: 'privacidade', label: 'Privacidade' },
+  { id: 'lei', label: 'Lei aplicável e foro' },
+];
+---
+
+<LegalLayout
+  path="/termos-de-uso/"
+  title="Termos de Uso"
+  lead="Condições para usar o site da TCAN Assessoria de Negócios."
+  toc={toc}
+>
+  <h2 id="aceite">1. Sobre estes termos</h2>
+  <p>
+    Estes Termos de Uso regulam o acesso ao site da <strong>{company.tradeName}</strong> (<Pending v={company.legalName} />,
+    CNPJ <Pending v={company.cnpj} />). Ao navegar pelo site, você concorda com eles. Se não concordar, recomendamos não
+    utilizar o site.
+  </p>
+
+  <h2 id="objeto">2. O que é este site</h2>
+  <p>
+    O site tem caráter informativo e apresenta a TCAN, seus sócios e o ecossistema de soluções empresariais. As
+    informações publicadas são gerais e não constituem proposta comercial, consultoria personalizada nem garantia de
+    resultado. Escopo, prazos, valores e condições de cada projeto são definidos em proposta e contrato específicos.
+  </p>
+  <p>
+    Parte das soluções pode ser executada por especialistas do ecossistema da TCAN, sob coordenação da TCAN, conforme
+    descrito em cada proposta.
+  </p>
+
+  <h2 id="propriedade">3. Propriedade intelectual</h2>
+  <p>
+    A marca TCAN, o logotipo, a identidade visual, os textos, o cartão 3D e os demais conteúdos do site pertencem à TCAN
+    ou são usados com autorização, e são protegidos pela Lei de Direitos Autorais (Lei nº 9.610/1998) e pela Lei da
+    Propriedade Industrial (Lei nº 9.279/1996). É proibido copiar, reproduzir, modificar ou usar esses conteúdos para
+    fins comerciais sem autorização prévia e por escrito.
+  </p>
+
+  <h2 id="uso">4. Uso permitido</h2>
+  <p>Ao usar o site, você se compromete a não:</p>
+  <ul>
+    <li>enviar informações falsas ou de terceiros sem autorização pelos canais de contato;</li>
+    <li>tentar acessar áreas restritas, interferir no funcionamento do site ou introduzir códigos maliciosos;</li>
+    <li>usar robôs ou ferramentas automatizadas para coletar conteúdos ou dados do site;</li>
+    <li>usar o site para qualquer finalidade ilegal ou que viole direitos de terceiros.</li>
+  </ul>
+
+  <h2 id="links">5. Links externos</h2>
+  <p>
+    O site contém links para serviços de terceiros, como WhatsApp, LinkedIn e aplicativos de e-mail. Esses serviços têm
+    termos e políticas próprios, pelos quais a TCAN não responde.
+  </p>
+
+  <h2 id="responsabilidade">6. Responsabilidade</h2>
+  <p>
+    Trabalhamos para manter o site disponível, seguro e com informações corretas, mas ele pode passar por interrupções,
+    manutenções ou conter imprecisões pontuais. Na extensão permitida pela lei, a TCAN não se responsabiliza por danos
+    decorrentes do uso das informações gerais do site sem a devida orientação profissional.
+  </p>
+
+  <h2 id="privacidade">7. Privacidade</h2>
+  <p>
+    O tratamento de dados pessoais segue a <a href={url('/politica-de-privacidade/')}>Política de Privacidade</a> e a
+    <a href={url('/politica-de-cookies/')}>Política de Cookies</a>.
+  </p>
+
+  <h2 id="lei">8. Lei aplicável e foro</h2>
+  <p>
+    Estes termos são regidos pela legislação brasileira. Fica eleito o foro da comarca de
+    <Pending v={company.address.city} />/<Pending v={company.address.state} />, ressalvado o direito do consumidor de
+    propor ação no foro do seu domicílio. Podemos atualizar estes termos a qualquer momento; a versão vigente é sempre a
+    publicada nesta página.
+  </p>
+</LegalLayout>

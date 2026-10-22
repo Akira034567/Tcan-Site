@@ -1,0 +1,251 @@
+---
+import { url } from '../../lib/url.ts';
+import { Image } from 'astro:assets';
+import logo from '../../assets/brand/tcan-white.png';
+import Icon from '../ui/Icon.astro';
+import BrandIcon from '../ui/BrandIcon.astro';
+import Pending from '../ui/Pending.astro';
+import { company } from '../../data/company.ts';
+import { founders } from '../../data/founders.ts';
+import { pillars } from '../../data/pillars.ts';
+import { founderWa } from '../../lib/links.ts';
+import { known } from '../../lib/placeholder.ts';
+
+const year = new Date().getFullYear();
+const linkedin = known(company.socials.linkedin);
+const instagram = known(company.socials.instagram);
+---
+
+<footer class="site-footer on-dark">
+  <div class="container">
+    <div class="top">
+      <div class="brand-col">
+        <a href={url('/')} class="brand" aria-label="TCAN Assessoria de Negócios, página inicial">
+          <Image src={logo} alt="" width={150} height={52} densities={[1, 2]} />
+        </a>
+        <p class="tagline">{company.tagline}</p>
+        <p class="signature">{company.signature}</p>
+        {
+          (linkedin || instagram) && (
+            <ul role="list" class="socials">
+              {linkedin && (
+                <li>
+                  <a href={linkedin} aria-label="LinkedIn da TCAN" rel="noopener" target="_blank">
+                    <BrandIcon name="linkedin" />
+                  </a>
+                </li>
+              )}
+              {instagram && (
+                <li>
+                  <a href={instagram} aria-label="Instagram da TCAN" rel="noopener" target="_blank">
+                    <BrandIcon name="instagram" />
+                  </a>
+                </li>
+              )}
+            </ul>
+          )
+        }
+      </div>
+
+      <nav class="cols" aria-label="Rodapé">
+        <div>
+          <h2 class="col-title">Soluções</h2>
+          <ul role="list">
+            {pillars.map((p) => <li><a href={url(`/solucoes/${p.slug}/`)}>{p.name}</a></li>)}
+            <li><a href={url('/solucoes/')}>Todas as soluções</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="col-title">TCAN</h2>
+          <ul role="list">
+            <li><a href={url('/sobre/')}>Quem somos</a></li>
+            <li><a href={url('/sobre/#metodo')}>Como trabalhamos</a></li>
+            <li><a href={url('/contato/')}>Contato</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="col-title">Fale com um sócio</h2>
+          <ul role="list" class="contacts">
+            {
+              founders.map((f) => (
+                <li>
+                  <span class="who">{f.name}</span>
+                  <a href={founderWa(f)} rel="noopener" target="_blank">
+                    <BrandIcon name="whatsapp" size={16} /> {f.phoneDisplay}
+                  </a>
+                  <a href={`mailto:${f.email}`}>
+                    <Icon name="mail" size={16} /> {f.email}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="bottom">
+      <ul role="list" class="legal">
+        <li><a href={url('/politica-de-privacidade/')}>Privacidade</a></li>
+        <li><a href={url('/politica-de-cookies/')}>Cookies</a></li>
+        <li><button type="button" class="linklike" data-consent-open>Preferências de cookies</button></li>
+        <li><a href={url('/termos-de-uso/')}>Termos de uso</a></li>
+        <li>
+          <a href={url('/acessibilidade/')} class="a11y"><Icon name="accessibility" size={18} /> Acessibilidade</a>
+        </li>
+      </ul>
+      <p class="company">
+        © {year} {company.tradeName} · <Pending v={company.legalName} /> · CNPJ <Pending v={company.cnpj} /> ·
+        <Pending v={company.address.city} />/<Pending v={company.address.state} />
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ink-950);
+    color: var(--text);
+    padding-block: clamp(3.5rem, 2.5rem + 4vw, 6rem) var(--space-6);
+    border-top: 1px solid rgb(255 255 255 / 0.06);
+  }
+  .top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
+    gap: var(--space-8);
+  }
+  .brand {
+    display: inline-block;
+    border-radius: 6px;
+  }
+  .brand img {
+    width: 150px;
+    height: auto;
+  }
+  .tagline {
+    margin-top: var(--space-5);
+    color: var(--text-muted);
+    font-size: var(--step--1);
+  }
+  .signature {
+    margin-top: var(--space-2);
+    font-family: var(--font-head);
+    font-size: var(--step-1);
+    font-weight: 500;
+    color: var(--lime-400);
+  }
+  .socials {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+  }
+  .socials a {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    color: var(--text);
+  }
+  .socials a:hover {
+    color: var(--lime-400);
+    border-color: var(--lime-400);
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+  .col-title {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-300);
+    margin-bottom: var(--space-4);
+  }
+  .cols ul {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .cols a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+  .cols a:hover {
+    color: var(--lime-400);
+    text-decoration: underline;
+  }
+  .contacts li {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .contacts .who {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .contacts a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--ink-200);
+  }
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4) var(--space-6);
+    margin-top: clamp(3rem, 2rem + 3vw, 4.5rem);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--line);
+    font-size: var(--step--1);
+  }
+  .legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+  }
+  .legal a,
+  .linklike {
+    color: var(--ink-200);
+    background: none;
+    border: 0;
+    padding: 0;
+    font-size: inherit;
+    text-decoration: underline;
+    text-decoration-color: rgb(255 255 255 / 0.25);
+    text-underline-offset: 0.25em;
+  }
+  .legal a:hover,
+  .linklike:hover {
+    color: var(--lime-400);
+    text-decoration-color: currentColor;
+  }
+  .a11y {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .company {
+    color: var(--ink-300);
+    max-width: none;
+  }
+  @media (max-width: 60rem) {
+    .top {
+      grid-template-columns: 1fr;
+      gap: var(--space-7);
+    }
+  }
+  @media (max-width: 40rem) {
+    .cols {
+      grid-template-columns: 1fr 1fr;
+    }
+    .cols > div:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

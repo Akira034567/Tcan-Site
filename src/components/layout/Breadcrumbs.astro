@@ -1,0 +1,55 @@
+---
+import { url } from '../../lib/url.ts';
+import type { Crumb } from '../../data/pages.ts';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  crumbs: Crumb[];
+}
+const { crumbs } = Astro.props;
+---
+
+<nav aria-label="Trilha de navegação" class="crumbs">
+  <ol role="list">
+    {
+      crumbs.map((c, i) => (
+        <li>
+          {i < crumbs.length - 1 ? (
+            <>
+              <a href={url(c.path)}>{c.name}</a>
+              <Icon name="chevron-right" size={14} />
+            </>
+          ) : (
+            <span aria-current="page">{c.name}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<style>
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    font-size: var(--step--1);
+    color: var(--ink-300);
+  }
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  a {
+    color: var(--ink-200);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--lime-400);
+    text-decoration: underline;
+  }
+  [aria-current] {
+    color: var(--ink-300);
+  }
+</style>

@@ -1,0 +1,49 @@
+{
+  "name": "tcan-site",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Site institucional da TCAN Assessoria de Negócios",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "validate:html": "html-validate \"dist/**/*.html\"",
+    "check:jsonld": "node scripts/check-jsonld.ts",
+    "check:budgets": "node scripts/check-budgets.ts",
+    "check:release": "node scripts/check-release.ts",
+    "test:e2e": "playwright test",
+    "verify": "npm run check && npm run build && npm run validate:html && npm run check:jsonld && npm run check:budgets && npm run test:e2e",
+    "release": "npm run verify && npm run check:release",
+    "screenshots": "node scripts/screenshots.ts screenshots / /sobre/ /solucoes/ /solucoes/esg-inovacao-sustentavel/ /contato/",
+    "serve": "node scripts/serve.ts dist 4321"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/outfit": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/outfit": "^5.3.0",
+    "@lucide/astro": "^1.61.0",
+    "astro": "^7.4.2",
+    "fontkit": "^2.0.4",
+    "sharp": "^0.35.5",
+    "three": "^0.186.1",
+    "uqr": "^0.1.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
+    "@types/fontkit": "^2.0.9",
+    "@types/node": "^26.6.5",
+    "@types/three": "^0.186.0",
+    "html-validate": "^11.17.0",
+    "simple-icons": "^16.35.0",
+    "typescript": "^6.0.3"
+  }
+}

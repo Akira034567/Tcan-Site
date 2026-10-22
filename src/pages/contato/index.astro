@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/layout/PageHero.astro';
+import ContactForm from '../../components/contact/ContactForm.astro';
+import Icon from '../../components/ui/Icon.astro';
+import BrandIcon from '../../components/ui/BrandIcon.astro';
+import Pending from '../../components/ui/Pending.astro';
+import { pageMeta } from '../../data/pages.ts';
+import { company } from '../../data/company.ts';
+import { founders } from '../../data/founders.ts';
+import { founderWa, telLink } from '../../lib/links.ts';
+
+const path = '/contato/';
+const meta = pageMeta(path);
+const next = [
+  { title: 'Conversa inicial', text: 'Um sócio entra em contato para entender o desafio e o contexto da sua empresa.' },
+  { title: 'Diagnóstico', text: 'Levantamos informações e definimos onde estão as maiores oportunidades.' },
+  { title: 'Proposta', text: 'Você recebe escopo, cronograma, formato de trabalho e indicadores de sucesso.' },
+];
+---
+
+<BaseLayout path={path}>
+  <PageHero
+    eyebrow="Contato"
+    title="Fale com um sócio."
+    lead="Sem intermediários: quem responde é quem vai conduzir o trabalho com você."
+    crumbs={meta.breadcrumb}
+  />
+
+  <section class="section contact" aria-label="Formas de contato">
+    <div class="container layout">
+      <aside class="side" aria-labelledby="direct-title">
+        <div>
+        <h2 id="direct-title" class="side-title eyebrow">Contato direto</h2>
+        <ul role="list" class="people">
+          {
+            founders.map((f) => (
+              <li class="person">
+                <p class="name">{f.name}</p>
+                <p class="role">{f.role}</p>
+                <a class="btn btn--sm" href={founderWa(f)} target="_blank" rel="noopener" data-location="contato">
+                  <BrandIcon name="whatsapp" size={18} /> WhatsApp
+                </a>
+                <ul role="list" class="lines">
+                  <li>
+                    <Icon name="phone" size={18} />
+                    <a href={telLink(f.phoneE164)}>{f.phoneDisplay.replace(' ', ' ').replace('-', '‑')}</a>
+                  </li>
+                  <li>
+                    <Icon name="mail" size={18} />
+                    <a href={`mailto:${f.email}`} data-location="contato">{f.email}</a>
+                  </li>
+                  <li>
+                    <BrandIcon name="linkedin" size={18} />
+                    <a href={f.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+                  </li>
+                </ul>
+              </li>
+            ))
+          }
+        </ul>
+        </div>
+
+        <div class="next">
+          <h2 class="side-title eyebrow">O que acontece depois</h2>
+          <ol role="list">
+            {
+              next.map((n, i) => (
+                <li>
+                  <span class="n">{i + 1}</span>
+                  <div>
+                    <strong>{n.title}</strong>
+                    <p>{n.text}</p>
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+          <p class="reply">
+            <Icon name="clock" size={18} /> Respondemos <Pending v={company.replyTime} />.
+          </p>
+        </div>
+
+
+      </aside>
+
+      <div class="main">
+        <div class="form-card">
+          <h2 class="form-title">Envie uma mensagem</h2>
+          <ContactForm />
+        </div>
+        <div class="company">
+          <h2 class="side-title eyebrow">Dados da empresa</h2>
+          <p>
+            {company.tradeName}<br />
+            <Pending v={company.legalName} /><br />
+            CNPJ <Pending v={company.cnpj} /><br />
+            <Pending v={company.address.street} /> · <Pending v={company.address.city} />/<Pending v={company.address.state} />
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact {
+    background: var(--paper);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 1rem + 4vw, 4.5rem);
+    align-items: start;
+  }
+  .side {
+    display: grid;
+    gap: var(--space-7);
+  }
+  .side-title {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--forest-800);
+    margin-bottom: var(--space-4);
+  }
+  .people {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .person {
+    display: grid;
+    gap: var(--space-3);
+    justify-items: start;
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    border: 1px solid var(--line);
+  }
+  .name {
+    font-family: var(--font-head);
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .role {
+    color: var(--text-muted);
+    margin-top: calc(var(--space-3) * -1);
+  }
+  .lines {
+    display: grid;
+    gap: var(--space-2);
+    font-size: 0.95rem;
+  }
+  .lines li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .lines :global(svg) {
+    color: var(--forest-800);
+    flex: none;
+  }
+  .next ol {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .next li {
+    display: flex;
+    gap: var(--space-4);
+  }
+  .n {
+    display: grid;
+    place-items: center;
+    inline-size: 2rem;
+    block-size: 2rem;
+    border-radius: 50%;
+    background: var(--forest-800);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    flex: none;
+  }
+  .next p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .reply {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+    font-weight: 500;
+  }
+  .company p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+  .main {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .company {
+    padding: var(--space-5) var(--space-6);
+    border-radius: var(--radius-lg);
+    background: var(--mist);
+  }
+  .form-card {
+    padding: clamp(1.5rem, 1rem + 2.5vw, 3rem);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-2);
+  }
+  .form-title {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-5);
+  }
+  @media (max-width: 60rem) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .main {
+      order: -1;
+    }
+  }
+</style>

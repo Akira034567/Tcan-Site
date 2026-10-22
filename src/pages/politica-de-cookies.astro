@@ -1,0 +1,180 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import { cookieTable } from '../data/cookies.ts';
+
+const toc = [
+  { id: 'o-que-sao', label: 'O que são cookies' },
+  { id: 'categorias', label: 'Categorias que usamos' },
+  { id: 'lista', label: 'Lista de cookies' },
+  { id: 'nao-usamos', label: 'O que não usamos' },
+  { id: 'gerenciar', label: 'Como gerenciar' },
+];
+---
+
+<LegalLayout
+  path="/politica-de-cookies/"
+  title="Política de Cookies"
+  lead="Quais cookies o site da TCAN usa, para quê, por quanto tempo e como você controla a sua escolha, conforme a LGPD e o Guia Orientativo de Cookies da ANPD."
+  toc={toc}
+>
+  <h2 id="o-que-sao">1. O que são cookies</h2>
+  <p>
+    Cookies são pequenos arquivos que um site grava no seu navegador para lembrar informações entre uma página e outra
+    ou entre visitas. Eles podem ser próprios (gravados pelo site que você visita) ou de terceiros (gravados por outros
+    serviços usados pelo site).
+  </p>
+
+  <h2 id="categorias">2. Categorias que usamos</h2>
+  <h3>Necessários: sempre ativos</h3>
+  <p>
+    Indispensáveis para o funcionamento do site. Usamos apenas um, que guarda a sua escolha sobre cookies. Por serem
+    essenciais, não dependem de consentimento (base legal: legítimo interesse, art. 7º, IX da LGPD), mas você é
+    informado sobre eles aqui.
+  </p>
+  <h3>Estatísticos: somente com o seu consentimento</h3>
+  <p>
+    Usamos o Google Analytics 4 para entender, de forma agregada, quantas pessoas visitam o site e quais conteúdos são
+    mais úteis. Esses cookies ficam <strong>desligados por padrão</strong> e só são ativados se você clicar em “Aceitar
+    todos” ou ligar a categoria em “Preferências de cookies” (base legal: consentimento, art. 7º, I). Configuramos o
+    Google Analytics sem sinais para publicidade e sem personalização de anúncios.
+  </p>
+
+  <h2 id="lista">3. Lista de cookies</h2>
+  <section class="table-wrap cookie-table" tabindex="0" aria-label="Tabela de cookies">
+    <table>
+      <colgroup>
+        <col class="c-name" /><col class="c-provider" /><col class="c-cat" /><col class="c-purpose" /><col class="c-dur" /><col class="c-transfer" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th scope="col">Cookie</th>
+          <th scope="col">Fornecedor</th>
+          <th scope="col">Categoria</th>
+          <th scope="col">Finalidade</th>
+          <th scope="col">Duração</th>
+          <th scope="col">Transferência internacional</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          cookieTable.map((c) => (
+            <tr>
+              <th scope="row" data-label="Cookie"><code>{c.name}</code></th>
+              <td data-label="Fornecedor">{c.provider}</td>
+              <td data-label="Categoria">{c.category}</td>
+              <td data-label="Finalidade">{c.purpose}</td>
+              <td data-label="Duração" class="nowrap">{c.duration}</td>
+              <td data-label="Transferência internacional">{c.transfer}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </section>
+  <p>
+    <code>&lt;ID&gt;</code> corresponde ao identificador da propriedade do Google Analytics da TCAN. O Google trata esses
+    dados como operador, conforme os termos e a política de privacidade do Google.
+  </p>
+
+  <h2 id="nao-usamos">4. O que não usamos</h2>
+  <ul>
+    <li>cookies de publicidade, remarketing ou criação de perfis para anúncios;</li>
+    <li>pixels de redes sociais;</li>
+    <li>cookies de terceiros antes da sua escolha: nada opcional é carregado enquanto você não decidir.</li>
+  </ul>
+
+  <h2 id="gerenciar">5. Como gerenciar</h2>
+  <p>
+    Você pode aceitar, recusar ou mudar sua escolha a qualquer momento, com a mesma facilidade, em
+    <button type="button" class="inline-btn" data-consent-open>Preferências de cookies</button> (também disponível no
+    rodapé de todas as páginas). Ao retirar o consentimento, desativamos o Google Analytics e apagamos os cookies dele
+    do seu navegador.
+  </p>
+  <p>
+    Você também pode bloquear ou apagar cookies nas configurações do seu navegador. Bloquear o cookie necessário fará com
+    que o aviso de cookies apareça a cada visita.
+  </p>
+  <p>
+    Pedimos o seu consentimento novamente a cada 6 meses ou sempre que esta política mudar de forma relevante.
+  </p>
+</LegalLayout>
+
+<style>
+  .cookie-table table {
+    table-layout: fixed;
+    min-width: 44rem;
+  }
+  .c-name {
+    width: 14%;
+  }
+  .c-provider {
+    width: 18%;
+  }
+  .c-cat {
+    width: 13%;
+  }
+  .c-purpose {
+    width: 33%;
+  }
+  .c-dur {
+    width: 10%;
+  }
+  .c-transfer {
+    width: 12%;
+  }
+  .cookie-table tbody th {
+    background: none;
+    font-weight: 400;
+  }
+  .nowrap {
+    white-space: nowrap;
+  }
+  /* Phones: one card per cookie, label/value pairs. */
+  @media (max-width: 40rem) {
+    .cookie-table table {
+      min-width: 0;
+    }
+    .cookie-table colgroup,
+    .cookie-table thead {
+      display: none;
+    }
+    .cookie-table table,
+    .cookie-table tbody,
+    .cookie-table tr,
+    .cookie-table th,
+    .cookie-table td {
+      display: block;
+      width: 100%;
+    }
+    .cookie-table tr {
+      padding: var(--space-4);
+      margin-bottom: var(--space-3);
+      border-radius: var(--radius-md);
+      background: var(--paper);
+    }
+    .cookie-table tbody th,
+    .cookie-table td {
+      display: grid;
+      grid-template-columns: 7.5rem minmax(0, 1fr);
+      gap: var(--space-3);
+      padding: 0.35rem 0;
+      border: 0;
+    }
+    .cookie-table tbody th::before,
+    .cookie-table td::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: var(--ink-900);
+    }
+  }
+  .inline-btn {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--forest-800);
+    font: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>

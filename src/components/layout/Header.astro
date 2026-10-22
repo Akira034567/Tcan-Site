@@ -1,0 +1,311 @@
+---
+import { url } from '../../lib/url.ts';
+import { Image } from 'astro:assets';
+import logo from '../../assets/brand/tcan-white.png';
+import Icon from '../ui/Icon.astro';
+import { pillars } from '../../data/pillars.ts';
+
+interface Props {
+  path: string;
+}
+const { path } = Astro.props;
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const nav = [
+  { href: '/sobre/', label: 'Quem somos' },
+  { href: '/contato/', label: 'Contato' },
+];
+---
+
+<header class="site-header on-dark" data-header>
+  <div class="container bar">
+    <a class="brand" href={url('/')} aria-label="TCAN Assessoria de Negócios, página inicial">
+      <Image src={logo} alt="" width={116} height={40} densities={[1, 2]} loading="eager" fetchpriority="high" />
+    </a>
+
+    <nav class="nav" aria-label="Principal" data-nav>
+      <ul role="list" class="nav-list" id="menu-principal" data-menu>
+        <li class="has-panel">
+          <button
+            class:list={['nav-link', 'nav-button', { current: isCurrent('/solucoes/') }]}
+            type="button"
+            aria-expanded="false"
+            aria-controls="painel-solucoes"
+            data-disclosure
+          >
+            Soluções <Icon name="chevron-down" size={16} class="chev" />
+          </button>
+          <div class="panel" id="painel-solucoes" hidden data-panel>
+            <ul role="list" class="panel-grid">
+              {
+                pillars.map((p) => (
+                  <li>
+                    <a class="panel-item" href={url(`/solucoes/${p.slug}/`)} aria-current={path === `/solucoes/${p.slug}/` ? 'page' : undefined}>
+                      <span class="icon-badge">
+                        <Icon name={p.icon} />
+                      </span>
+                      <span>
+                        <strong>{p.name}</strong>
+                        <span class="panel-desc">{p.solutions.map((s) => s.name).join(' · ')}</span>
+                      </span>
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+            <a class="link-arrow panel-all" href={url('/solucoes/')}>
+              Ver o ecossistema completo <Icon name="arrow-right" size={18} />
+            </a>
+          </div>
+        </li>
+        {
+          nav.map((item) => (
+            <li>
+              <a class:list={['nav-link', { current: isCurrent(item.href) }]} href={url(item.href)} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li class="nav-cta-mobile">
+          <a class="btn btn--block" href={url('/contato/')}>Fale com um sócio</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="actions">
+      <a class="a11y-link" href={url('/acessibilidade/')} aria-label="Acessibilidade" title="Acessibilidade">
+        <Icon name="accessibility" size={22} />
+      </a>
+      <a class="btn btn--sm header-cta" href={url('/contato/')}>Fale com um sócio</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principal" data-menu-toggle>
+        <span class="visually-hidden" data-menu-label>Abrir menu</span>
+        <Icon name="menu" size={24} class="icon-open" />
+        <Icon name="x" size={24} class="icon-close" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(20 23 20 / 0.86);
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    border-bottom: 1px solid rgb(255 255 255 / 0.07);
+    transition: box-shadow var(--dur-3) var(--ease-out);
+  }
+  .site-header[data-scrolled] {
+    box-shadow: 0 10px 30px -18px rgb(0 0 0 / 0.8);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    min-height: var(--header-h);
+  }
+  .brand {
+    display: block;
+    flex: none;
+    border-radius: 6px;
+  }
+  .brand img {
+    width: 116px;
+    height: auto;
+  }
+  .nav {
+    margin-inline-start: auto;
+  }
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.6rem 0.85rem;
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-weight: 500;
+    font-size: 0.975rem;
+    text-decoration: none;
+    background: none;
+    border: 0;
+    position: relative;
+  }
+  .nav-link:hover {
+    background: rgb(255 255 255 / 0.06);
+  }
+  .nav-link.current::after {
+    content: '';
+    position: absolute;
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0.3rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--lime-400);
+  }
+  .nav-button :global(.chev) {
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+  .nav-button[aria-expanded='true'] :global(.chev) {
+    transform: rotate(180deg);
+  }
+  .has-panel {
+    position: relative;
+  }
+  .panel {
+    position: absolute;
+    top: calc(100% + 0.9rem);
+    left: 50%;
+    translate: -50% 0;
+    width: min(44rem, 92vw);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    background: var(--ink-850);
+    box-shadow:
+      var(--ring-dark),
+      0 30px 60px -20px rgb(0 0 0 / 0.7);
+  }
+  .panel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-1);
+  }
+  .panel-item {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    color: var(--text);
+    text-decoration: none;
+    line-height: 1.35;
+  }
+  .panel-item:hover {
+    background: rgb(255 255 255 / 0.05);
+  }
+  .panel-item strong {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  .panel-desc {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .panel-all {
+    margin: var(--space-3) var(--space-4) var(--space-2);
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .a11y-link {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    border-radius: 50%;
+    color: var(--ink-200);
+  }
+  .a11y-link:hover {
+    color: var(--lime-400);
+    background: rgb(255 255 255 / 0.06);
+  }
+  .menu-toggle {
+    display: none;
+    place-items: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgb(255 255 255 / 0.14);
+    background: transparent;
+    color: var(--text);
+  }
+  .menu-toggle :global(.icon-close) {
+    display: none;
+  }
+  .menu-toggle[aria-expanded='true'] :global(.icon-open) {
+    display: none;
+  }
+  .menu-toggle[aria-expanded='true'] :global(.icon-close) {
+    display: block;
+  }
+  .nav-cta-mobile {
+    display: none;
+  }
+
+  @media (max-width: 60rem) {
+    .menu-toggle {
+      display: inline-grid;
+    }
+    .header-cta {
+      display: none;
+    }
+    .actions {
+      margin-inline-start: auto;
+    }
+    .nav {
+      margin: 0;
+    }
+    .nav-list {
+      position: fixed;
+      inset: var(--header-h) 0 auto 0;
+      max-height: calc(100dvh - var(--header-h));
+      overflow-y: auto;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: var(--space-4) var(--gutter) var(--space-6);
+      background: var(--ink-900);
+      border-bottom: 1px solid rgb(255 255 255 / 0.08);
+      box-shadow: 0 30px 50px -20px rgb(0 0 0 / 0.8);
+    }
+    :global(.js) .nav-list:not([data-open]) {
+      display: none;
+    }
+    .nav-link {
+      width: 100%;
+      justify-content: space-between;
+      padding: 0.9rem 0.25rem;
+      font-size: 1.1rem;
+      border-bottom: 1px solid rgb(255 255 255 / 0.07);
+      border-radius: 0;
+    }
+    .nav-link.current::after {
+      left: 0.25rem;
+      right: auto;
+      width: 2rem;
+      bottom: 0.4rem;
+    }
+    .panel {
+      position: static;
+      translate: none;
+      width: auto;
+      padding: var(--space-2) 0;
+      background: none;
+      box-shadow: none;
+    }
+    .panel-grid {
+      grid-template-columns: 1fr;
+    }
+    .panel-item {
+      padding: var(--space-3) var(--space-2);
+    }
+    .panel-all {
+      margin-inline: var(--space-2);
+    }
+    .nav-cta-mobile {
+      display: block;
+      margin-top: var(--space-5);
+    }
+  }
+</style>

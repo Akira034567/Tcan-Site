@@ -1,0 +1,33 @@
+---
+import '../styles/base.css';
+import BaseHead from '../components/layout/BaseHead.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import ConsentManager from '../components/consent/ConsentManager.astro';
+
+interface Props {
+  path: string;
+  schema?: Record<string, unknown>[];
+}
+
+const { path, schema } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <BaseHead path={path} schema={schema} />
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <ConsentManager />
+    <Header path={path} />
+    <main id="conteudo" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import '../scripts/site.ts';
+    </script>
+  </body>
+</html>

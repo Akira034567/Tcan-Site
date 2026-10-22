@@ -1,0 +1,79 @@
+---
+import { url } from '../lib/url.ts';
+import Icon from './ui/Icon.astro';
+import { method } from '../data/content.ts';
+---
+
+<section class="section section--tight strip" aria-labelledby="strip-title">
+  <div class="container">
+    <div class="head">
+      <p class="eyebrow">Como conduzimos</p>
+      <h2 id="strip-title">Do diagnóstico à meta ticada.</h2>
+      <a class="link-arrow" href={url('/sobre/#metodo')}>Conheça o método <Icon name="arrow-right" /></a>
+    </div>
+    <ol role="list" class="steps">
+      {
+        method.map((m) => (
+          <li>
+            <span class="num">{m.step}</span>
+            <div>
+              <h3>{m.title}</h3>
+              <p>{m.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .strip {
+    background: var(--mist);
+  }
+  .head {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+  h2 {
+    font-size: var(--step-3);
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+  }
+  li {
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    padding-top: var(--space-4);
+    border-top: 2px solid var(--ink-900);
+  }
+  .num {
+    font-family: var(--font-head);
+    font-weight: 600;
+    color: var(--forest-800);
+  }
+  h3 {
+    font-size: var(--step-1);
+  }
+  li p {
+    margin-top: var(--space-2);
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  @media (max-width: 60rem) {
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: var(--space-6);
+    }
+  }
+  @media (max-width: 34rem) {
+    .steps {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

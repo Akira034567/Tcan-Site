@@ -1,0 +1,52 @@
+---
+import { url } from '../lib/url.ts';
+import LegalLayout from '../layouts/LegalLayout.astro';
+import Pending from '../components/ui/Pending.astro';
+import { company } from '../data/company.ts';
+
+const toc = [
+  { id: 'compromisso', label: 'Nosso compromisso' },
+  { id: 'recursos', label: 'Recursos do site' },
+  { id: 'limitacoes', label: 'Limitações conhecidas' },
+  { id: 'contato', label: 'Relate uma barreira' },
+];
+---
+
+<LegalLayout
+  path="/acessibilidade/"
+  title="Acessibilidade"
+  lead="Queremos que todas as pessoas consigam conhecer a TCAN e falar com a gente, com qualquer dispositivo e tecnologia assistiva."
+  toc={toc}
+>
+  <h2 id="compromisso">1. Nosso compromisso</h2>
+  <p>
+    Este site foi projetado para atender às Diretrizes de Acessibilidade para Conteúdo Web (WCAG) 2.2, nível AA, e ao
+    art. 63 da Lei Brasileira de Inclusão da Pessoa com Deficiência (Lei nº 13.146/2015).
+  </p>
+
+  <h2 id="recursos">2. Recursos do site</h2>
+  <ul>
+    <li>navegação completa por teclado, com foco sempre visível e atalho “Pular para o conteúdo”;</li>
+    <li>estrutura semântica de títulos, regiões e listas para leitores de tela;</li>
+    <li>contraste de cores verificado e textos que podem ser ampliados até 200% sem perda de conteúdo;</li>
+    <li>respeito à preferência do sistema por redução de movimento;</li>
+    <li>
+      o cartão 3D tem controles por botões (frente, verso e escolha do sócio) e os mesmos contatos estão disponíveis em
+      texto, sem depender de arrastar ou de ler o QR Code;
+    </li>
+    <li>formulário com rótulos, instruções e mensagens de erro claras, sem CAPTCHA;</li>
+    <li>aviso de cookies que não bloqueia a navegação e pode ser operado por teclado.</li>
+  </ul>
+
+  <h2 id="limitacoes">3. Limitações conhecidas</h2>
+  <p>
+    O cartão 3D é um elemento visual decorativo; todas as informações dele também aparecem em texto na página.
+    Continuamos avaliando o site e corrigindo eventuais barreiras.
+  </p>
+
+  <h2 id="contato">4. Relate uma barreira</h2>
+  <p>
+    Encontrou alguma dificuldade? Escreva para <strong><Pending v={company.email} /></strong> ou fale com um dos sócios
+    pela <a href={url('/contato/')}>página de contato</a>, contando a página e o problema. Responderemos o quanto antes.
+  </p>
+</LegalLayout>

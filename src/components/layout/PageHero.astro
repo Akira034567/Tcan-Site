@@ -1,0 +1,89 @@
+---
+import Breadcrumbs from './Breadcrumbs.astro';
+import type { Crumb } from '../../data/pages.ts';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  crumbs?: Crumb[];
+  size?: 'md' | 'sm';
+  /** Eyebrow without the tick (e.g. error pages). */
+  plain?: boolean;
+}
+const { eyebrow, title, lead, crumbs, size = 'md', plain = false } = Astro.props;
+---
+
+<section class:list={['page-hero', 'on-dark', `page-hero--${size}`]} aria-labelledby="page-title">
+  <svg class="tick" viewBox="0 0 400 500" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+    <polygon class="s1" points="120,500 196,500 400,26 400,0 344,0"></polygon>
+    <polygon class="s2" points="196,500 278,500 400,398 400,316"></polygon>
+  </svg>
+  <div class="container inner">
+    {crumbs && <Breadcrumbs crumbs={crumbs} />}
+    <p class:list={['eyebrow', { 'eyebrow--plain': plain }]}>{eyebrow}</p>
+    <h1 id="page-title">{title}</h1>
+    {lead && <p class="lead">{lead}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+      radial-gradient(50rem 30rem at 85% 30%, rgb(23 89 42 / 0.45), transparent 65%),
+      var(--ink-900);
+    color: var(--text);
+    padding-block: clamp(2.5rem, 1.5rem + 4vw, 5.5rem) clamp(3rem, 2rem + 4vw, 6rem);
+  }
+  .page-hero--sm {
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.5rem) clamp(2.5rem, 2rem + 2vw, 4rem);
+  }
+  /* The business card's tick stripes, as on the printed card. */
+  .tick {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: min(26rem, 34vw);
+    height: 100%;
+    z-index: -1;
+  }
+  .s1 {
+    fill: var(--lime-400);
+  }
+  .s2 {
+    fill: var(--green-500);
+  }
+  @media (max-width: 60rem) {
+    .tick {
+      opacity: 0.16;
+      width: 60vw;
+    }
+  }
+  .inner {
+    display: grid;
+    gap: var(--space-5);
+    justify-items: start;
+    padding-right: min(22rem, 30vw);
+  }
+  @media (max-width: 60rem) {
+    .inner {
+      padding-right: 0;
+    }
+  }
+  h1 {
+    font-size: var(--step-5);
+    max-width: 22ch;
+    letter-spacing: -0.03em;
+  }
+  .page-hero--sm h1 {
+    font-size: var(--step-4);
+  }
+  .lead {
+    color: var(--ink-200);
+    max-width: 44rem;
+  }
+</style>

@@ -1,0 +1,160 @@
+---
+import { url } from '../../lib/url.ts';
+import Icon from '../ui/Icon.astro';
+import BrandIcon from '../ui/BrandIcon.astro';
+import type { Pillar, Solution } from '../../data/pillars.ts';
+import { company } from '../../data/company.ts';
+import { founderById } from '../../data/founders.ts';
+import { founderWa } from '../../lib/links.ts';
+
+interface Props {
+  pillar: Pillar;
+  solution: Solution;
+  index: number;
+}
+const { pillar, solution, index } = Astro.props;
+const founder = founderById(company.routing[pillar.id]);
+const alt = index % 2 === 1;
+---
+
+<section class:list={['section', 'solution', { alt }]} id={solution.anchor} aria-labelledby={`${solution.anchor}-title`}>
+  <div class="container layout">
+    <div class="copy">
+      <div class="title-row">
+        <span class="icon-badge"><Icon name={solution.icon} /></span>
+        <p class="eyebrow">Solução {String(index + 1).padStart(2, '0')}</p>
+      </div>
+      <h2 id={`${solution.anchor}-title`}>{solution.name}</h2>
+      <p class="lead">{solution.summary}</p>
+      {solution.body.map((p) => <p>{p}</p>)}
+      <div class="ctas">
+        <a class="btn" href={founderWa(founder, solution.name)} target="_blank" rel="noopener" data-location={`solucao-${solution.anchor}`}>
+          <BrandIcon name="whatsapp" size={18} /> Conversar com {founder.firstName}
+        </a>
+        <a class="btn btn--ghost" href={url(`/contato/?interesse=${pillar.id}`)}>Enviar mensagem</a>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="block">
+        <h3>O que entregamos</h3>
+        <ul class="tick-list">
+          {solution.deliverables.map((d) => <li>{d}</li>)}
+        </ul>
+      </div>
+      <div class="block">
+        <h3>Formatos</h3>
+        <ul role="list" class="chips">
+          {solution.formats.map((f) => <li class="chip">{f}</li>)}
+        </ul>
+      </div>
+      <div class="block">
+        <h3>O que você ganha</h3>
+        <ul role="list" class="outcomes">
+          {
+            solution.outcomes.map((o) => (
+              <li>
+                <Icon name="trending-up" size={18} />
+                <span>{o}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .solution {
+    background: var(--white);
+    scroll-margin-top: var(--header-h);
+  }
+  .solution.alt {
+    background: var(--paper);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .copy {
+    display: grid;
+    gap: var(--space-4);
+  }
+  /* Keep the copy beside the long panel only where it fits on screen. */
+  @media (min-width: 60.01rem) and (min-height: 56rem) {
+    .copy {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+  .title-row {
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
+  }
+  h2 {
+    font-size: var(--step-4);
+  }
+  .copy > p:not(.lead):not(.eyebrow) {
+    color: var(--ink-700);
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+  .panel {
+    display: grid;
+    gap: var(--space-6);
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border-radius: var(--radius-lg);
+    background: var(--paper);
+    border: 1px solid var(--line);
+  }
+  .alt .panel {
+    background: var(--white);
+  }
+  h3 {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--forest-800);
+    margin-bottom: var(--space-4);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .chip {
+    background: var(--lime-100);
+    color: var(--forest-900);
+    border-radius: var(--radius-sm);
+  }
+  .outcomes {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .outcomes li {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    line-height: 1.45;
+  }
+  .outcomes :global(svg) {
+    flex: none;
+    margin-top: 0.15rem;
+    color: var(--green-600);
+  }
+  @media (max-width: 60rem) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

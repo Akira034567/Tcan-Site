@@ -1,0 +1,23 @@
+---
+import { icons, type IconName } from '../../lib/icons.ts';
+
+interface Props {
+  name: IconName;
+  size?: number | string;
+  strokeWidth?: number;
+  class?: string;
+  /** Accessible name. Without it the icon is decorative (aria-hidden). */
+  label?: string;
+}
+
+const { name, size = 24, strokeWidth = 1.75, class: className, label } = Astro.props;
+const Component = icons[name];
+---
+
+{
+  label ? (
+    <Component size={size} stroke-width={strokeWidth} class={className} role="img" aria-label={label} />
+  ) : (
+    <Component size={size} stroke-width={strokeWidth} class={className} aria-hidden="true" focusable="false" />
+  )
+}

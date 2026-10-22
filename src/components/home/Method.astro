@@ -1,0 +1,168 @@
+---
+import Icon from '../ui/Icon.astro';
+import { method, cycle } from '../../data/content.ts';
+
+interface Props {
+  id?: string;
+}
+const { id = 'metodo' } = Astro.props;
+---
+
+<section class="section on-forest method" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <div class="top">
+      <div class="section-head">
+        <p class="eyebrow">Como trabalhamos</p>
+        <h2 id={`${id}-title`}>Mão na massa, sentando na cadeira executiva.</h2>
+        <p class="lead">
+          Não entregamos um relatório e vamos embora. Assumimos a missão do negócio com você, conectamos o time certo e
+          acompanhamos cada etapa com indicadores.
+        </p>
+      </div>
+      <figure class="cycle" aria-labelledby={`${id}-cycle`}>
+        <figcaption id={`${id}-cycle`} class="cycle-title">Ciclo virtuoso de melhoria contínua</figcaption>
+        <ol role="list" class="cycle-list">
+          {
+            cycle.map((c) => (
+              <li>
+                <span class="cycle-icon">
+                  <Icon name={c.icon} size={20} />
+                </span>
+                <span>
+                  <strong>{c.title}</strong>
+                  <span class="cycle-text">{c.text}</span>
+                </span>
+              </li>
+            ))
+          }
+        </ol>
+      </figure>
+    </div>
+
+    <ol role="list" class="steps">
+      {
+        method.map((m, i) => (
+          <li class="step" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <span class="num" aria-hidden="true">
+              {m.step}
+            </span>
+            <span class="icon-badge">
+              <Icon name={m.icon} />
+            </span>
+            <h3>{m.title}</h3>
+            <p>{m.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .method {
+    overflow: hidden;
+  }
+  .top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+  }
+  .top .section-head {
+    margin-bottom: 0;
+  }
+  .cycle {
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    background: rgb(255 255 255 / 0.05);
+    box-shadow: var(--ring-dark);
+  }
+  .cycle-title {
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--lime-400);
+    margin-bottom: var(--space-4);
+  }
+  .cycle-list {
+    display: grid;
+    gap: var(--space-4);
+    position: relative;
+  }
+  .cycle-list li {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+    line-height: 1.45;
+  }
+  .cycle-icon {
+    display: grid;
+    place-items: center;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    border-radius: 50%;
+    background: var(--lime-400);
+    color: var(--ink-950);
+    flex: none;
+  }
+  .cycle-list strong {
+    display: block;
+    font-family: var(--font-head);
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+  .cycle-text {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-4);
+    counter-reset: step;
+  }
+  .step {
+    position: relative;
+    display: grid;
+    gap: var(--space-3);
+    align-content: start;
+    padding: var(--space-5);
+    border-radius: var(--radius-lg);
+    background: rgb(255 255 255 / 0.04);
+    box-shadow: var(--ring-dark);
+  }
+  .num {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-5);
+    font-family: var(--font-head);
+    font-size: var(--step-3);
+    font-weight: 600;
+    color: rgb(112 191 60 / 0.8);
+    line-height: 1;
+  }
+  h3 {
+    font-size: var(--step-1);
+    margin-top: var(--space-2);
+  }
+  .step p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  @media (max-width: 64rem) {
+    .top {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+    .steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 40rem) {
+    .steps {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

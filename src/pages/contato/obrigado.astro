@@ -1,0 +1,32 @@
+---
+import { url } from '../../lib/url.ts';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/layout/PageHero.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { company } from '../../data/company.ts';
+import Pending from '../../components/ui/Pending.astro';
+---
+
+<BaseLayout path="/contato/obrigado/">
+  <PageHero eyebrow="Mensagem enviada" title="Recebemos sua mensagem.">
+    <p class="text">
+      Um sócio da TCAN vai responder <Pending v={company.replyTime} />. Enquanto isso, conheça nossas soluções.
+    </p>
+    <div class="ctas">
+      <a class="btn" href={url('/solucoes/')}>Ver soluções <Icon name="arrow-right" /></a>
+      <a class="btn btn--ghost" href={url('/')}>Voltar ao início</a>
+    </div>
+  </PageHero>
+</BaseLayout>
+
+<style>
+  .text {
+    color: var(--ink-200);
+    font-size: var(--step-1);
+  }
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+</style>

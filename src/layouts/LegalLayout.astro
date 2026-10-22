@@ -1,0 +1,155 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import { pageMeta } from '../data/pages.ts';
+import { company } from '../data/company.ts';
+
+interface Props {
+  path: string;
+  title: string;
+  lead?: string;
+  toc: { id: string; label: string }[];
+}
+const { path, title, lead, toc } = Astro.props;
+const meta = pageMeta(path);
+const updated = new Date(`${company.policiesUpdated}T12:00:00`).toLocaleDateString('pt-BR', {
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<BaseLayout path={path}>
+  <PageHero eyebrow="Transparência" title={title} lead={lead} crumbs={meta.breadcrumb} />
+  <section class="section legal">
+    <div class="container layout">
+      <nav class="toc" aria-labelledby="toc-title">
+        <p id="toc-title" class="toc-title">Nesta página</p>
+        <ol role="list">
+          {toc.map((t) => <li><a href={`#${t.id}`}>{t.label}</a></li>)}
+        </ol>
+      </nav>
+      <article class="prose">
+        {
+          !company.legalReviewed && (
+            <p class="review pending" data-pending="Revisão jurídica das políticas">
+              Minuta para revisão jurídica. Publicar somente após validação por advogado(a).
+            </p>
+          )
+        }
+        <p class="updated">Última atualização: {updated} · Versão {company.policyVersion}</p>
+        <slot />
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal {
+    background: var(--white);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: start;
+  }
+  .toc {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+  .toc-title {
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--forest-800);
+    margin-bottom: var(--space-3);
+  }
+  .toc ol {
+    display: grid;
+    gap: var(--space-2);
+    font-size: 0.925rem;
+  }
+  .toc a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+  .toc a:hover {
+    color: var(--forest-800);
+    text-decoration: underline;
+  }
+  .prose {
+    max-width: 46rem;
+  }
+  .review {
+    display: block;
+    padding: var(--space-3) var(--space-4);
+    margin-bottom: var(--space-5);
+    font-weight: 600;
+  }
+  .updated {
+    color: var(--text-muted);
+    font-size: var(--step--1);
+    margin-bottom: var(--space-6);
+  }
+  .prose :global(h2) {
+    font-size: var(--step-2);
+    margin-top: var(--space-7);
+    margin-bottom: var(--space-4);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+  .prose :global(h3) {
+    font-size: var(--step-1);
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-3);
+  }
+  .prose :global(p),
+  .prose :global(li) {
+    color: var(--ink-700);
+  }
+  .prose :global(p + p) {
+    margin-top: var(--space-4);
+  }
+  .prose :global(ul),
+  .prose :global(ol:not([role])) {
+    display: grid;
+    gap: var(--space-2);
+    padding-left: 1.25rem;
+    margin-block: var(--space-4);
+  }
+  .prose :global(.table-wrap) {
+    overflow-x: auto;
+    margin-block: var(--space-5);
+  }
+  .prose :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.925rem;
+  }
+  .prose :global(th),
+  .prose :global(td) {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.7rem 0.75rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .prose :global(th) {
+    font-weight: 600;
+    background: var(--paper);
+  }
+  .prose :global(code) {
+    font-size: 0.9em;
+    background: var(--mist);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+  }
+  @media (max-width: 60rem) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .toc {
+      position: static;
+    }
+  }
+</style>
